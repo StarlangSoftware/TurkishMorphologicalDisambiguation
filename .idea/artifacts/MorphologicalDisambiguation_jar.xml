@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MorphologicalDisambiguation:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MorphologicalDisambiguation_jar</output-path>
+    <root id="archive" name="MorphologicalDisambiguation.jar">
+      <element id="module-output" name="MorphologicalDisambiguation" />
+    </root>
+  </artifact>
+</component>

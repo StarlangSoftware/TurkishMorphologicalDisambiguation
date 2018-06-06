@@ -53,3 +53,7 @@ nb-configuration.xml
 release.properties
 pom.xml.releaseBackup
 pom.xml.tag
+out/artifacts/MorphologicalDisambiguation_jar/MorphologicalDisambiguation.jar
+out/production/MorphologicalDisambiguation/libs/Hmm.jar
+out/production/MorphologicalDisambiguation/libs/MorphologicalAnalysis.jar
+out/production/MorphologicalDisambiguation/libs/NGram.jar

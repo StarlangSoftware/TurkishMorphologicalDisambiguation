@@ -19,8 +19,6 @@ public class TestMorphologicalDisambiguation {
     private static void testWordFormats(){
         DisambiguationCorpus corpus2 = new DisambiguationCorpus("Data/MorphologicalDisambiguation/penn_treebank.txt");
         corpus2.writeToFile("penntreebank-surface.txt", WordFormat.SURFACE);
-        corpus2.writeToFile("penntreebank-root.txt", WordFormat.ROOT);
-        corpus2.writeToFile("penntreebank-suffix.txt", WordFormat.SUFFIX);
     }
 
     private static void checkCorpus(FsmMorphologicalAnalyzer fsm, DisambiguationCorpus corpus){

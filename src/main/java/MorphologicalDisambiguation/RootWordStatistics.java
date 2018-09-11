@@ -14,11 +14,10 @@ public class RootWordStatistics implements Serializable{
     }
 
     public RootWordStatistics(String fileName){
-        FileInputStream inFile;
         ObjectInputStream inObject;
         try {
-            inFile = new FileInputStream(fileName);
-            inObject = new ObjectInputStream(inFile);
+            ClassLoader classLoader = getClass().getClassLoader();
+            inObject = new ObjectInputStream(classLoader.getResourceAsStream(fileName));
             statistics = (HashMap<String, CounterHashMap<String>>) inObject.readObject();
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();

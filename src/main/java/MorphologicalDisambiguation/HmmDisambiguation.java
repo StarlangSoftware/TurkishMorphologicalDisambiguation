@@ -128,20 +128,18 @@ public class HmmDisambiguation extends NaiveDisambiguation{
 
     public void saveModel() {
         super.saveModel();
-        wordBiGramModel.save("Model/words.2gram");
-        igBiGramModel.save("Model/igs.2gram");
+        wordBiGramModel.save("words.2gram");
+        igBiGramModel.save("igs.2gram");
     }
 
     public void loadModel() {
         super.loadModel();
-        FileInputStream inFile;
         ObjectInputStream inObject;
         try {
-            inFile = new FileInputStream("Model/words.2gram");
-            inObject = new ObjectInputStream(inFile);
+            ClassLoader classLoader = getClass().getClassLoader();
+            inObject = new ObjectInputStream(classLoader.getResourceAsStream("words.2gram"));
             wordBiGramModel = (NGram<Word>) inObject.readObject();
-            inFile = new FileInputStream("Model/igs.2gram");
-            inObject = new ObjectInputStream(inFile);
+            inObject = new ObjectInputStream(classLoader.getResourceAsStream("igs.2gram"));
             igBiGramModel = (NGram<Word>) inObject.readObject();
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();

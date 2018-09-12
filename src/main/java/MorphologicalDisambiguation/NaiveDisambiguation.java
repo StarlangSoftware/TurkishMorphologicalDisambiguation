@@ -13,19 +13,17 @@ public abstract class NaiveDisambiguation implements MorphologicalDisambiguator{
     protected NGram<Word> igUniGramModel;
 
     public void saveModel() {
-        wordUniGramModel.save("Model/words.1gram");
-        igUniGramModel.save("Model/igs.1gram");
+        wordUniGramModel.save("words.1gram");
+        igUniGramModel.save("igs.1gram");
     }
 
     public void loadModel() {
-        FileInputStream inFile;
         ObjectInputStream inObject;
         try {
-            inFile = new FileInputStream("Model/words.1gram");
-            inObject = new ObjectInputStream(inFile);
+            ClassLoader classLoader = getClass().getClassLoader();
+            inObject = new ObjectInputStream(classLoader.getResourceAsStream("words.1gram"));
             wordUniGramModel = (NGram<Word>) inObject.readObject();
-            inFile = new FileInputStream("Model/igs.1gram");
-            inObject = new ObjectInputStream(inFile);
+            inObject = new ObjectInputStream(classLoader.getResourceAsStream("igs.1gram"));
             igUniGramModel = (NGram<Word>) inObject.readObject();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

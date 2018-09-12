@@ -171,7 +171,7 @@ public class RootFirstClassifierDisambiguation extends RootFirstDisambiguation{
         FileOutputStream outFile;
         ObjectOutputStream outObject;
         try {
-            outFile = new FileOutputStream("Model/classifiers.bin");
+            outFile = new FileOutputStream("classifiers.bin");
             outObject = new ObjectOutputStream(outFile);
             outObject.writeObject(models);
         } catch (IOException e) {
@@ -181,11 +181,10 @@ public class RootFirstClassifierDisambiguation extends RootFirstDisambiguation{
 
     public void loadModel() {
         super.loadModel();
-        FileInputStream inFile;
         ObjectInputStream inObject;
         try {
-            inFile = new FileInputStream("Model/classifiers.bin");
-            inObject = new ObjectInputStream(inFile);
+            ClassLoader classLoader = getClass().getClassLoader();
+            inObject = new ObjectInputStream(classLoader.getResourceAsStream("classifiers.bin"));
             models = (HashMap<String, Model>) inObject.readObject();
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();

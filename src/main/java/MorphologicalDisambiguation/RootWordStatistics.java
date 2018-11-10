@@ -33,6 +33,20 @@ public class RootWordStatistics implements Serializable {
     }
 
     /**
+     * Constructor of {@link RootWordStatistics} class which fetches the statistics from given input file.
+     *
+     * @param inputStream File to get statistics.
+     */
+    public RootWordStatistics(FileInputStream inputStream){
+        ObjectInputStream inObject;
+        try {
+            inObject = new ObjectInputStream(inputStream);
+            statistics = (HashMap<String, CounterHashMap<String>>) inObject.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    /**
      * Method to check whether statistics contains the given String.
      *
      * @param key String to look for.

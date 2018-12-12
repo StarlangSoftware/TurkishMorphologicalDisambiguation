@@ -68,9 +68,6 @@ public class DisambiguationCorpus extends Corpus {
                     System.out.println("Not enough items in " + line + " " + i + "\n");
                 }
                 i++;
-                if (i % 10000 == 0) {
-                    System.out.println("Read " + i + " items");
-                }
                 line = br.readLine();
             }
         } catch (IOException e) {

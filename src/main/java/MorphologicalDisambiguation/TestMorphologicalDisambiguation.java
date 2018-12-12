@@ -128,7 +128,6 @@ public class TestMorphologicalDisambiguation {
 
     public static void main(String[] args){
         /*FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
-        //DisambiguationCorpus corpus = new DisambiguationCorpus("Data/MorphologicalDisambiguation/milliyet.txt");
         DisambiguationCorpus corpus = new DisambiguationCorpus("Data/MorphologicalDisambiguation/penn_treebank.txt");
         ExperimentPerformance[] performances = new ExperimentPerformance[3];
         for (int i = 0; i < 3; i++){

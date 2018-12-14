@@ -48,12 +48,12 @@ Steps for opening the cloned project:
 * Select open as project option
 * Couple of seconds, dependencies with Maven will be downloaded. 
 
-See the snapshot of the project at the beginning:
+<!--- See the snapshot of the project at the beginning:
 
 // put the link of ss
 
-![Main IDE page](https://github.com/master/dev/site/images/zemberek-ide-main.png)
-
+![Main IDE page](https://github.com/master/dev/site/images/zemberek-ide-main.png))
+--->
 ## Compile
 
 **From IDE**
@@ -137,11 +137,10 @@ MorphologicalDisambiguator provides Turkish morphological disambiguation. There 
         
         MorphologicalDisambiguator morphologicalDisambiguator = new HmmDisambiguation();
 
-* Using `RootFirstClassifierDisambiguation`,
+* Using `DummyDisambiguation`,
      
-        MorphologicalDisambiguator morphologicalDisambiguator = new RootFirstClassifierDisambiguation(new C45(), new Parameter(1));
+        MorphologicalDisambiguator morphologicalDisambiguator = new DummyDisambiguation();
     
-    where `C45` and `Parameter` are from [`Classification`](https://github.com/olcaytaner/Classification). 
 
 ## Training MorphologicalDisambiguator
 
@@ -159,22 +158,40 @@ To disambiguate a sentence, a `FsmMorphologicalAnalyzer` instance is required. T
     FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
     
 A sentence can be disambiguated as follows: 
-
+    
     Sentence sentence = new Sentence("Yarın doktora gidecekler");
     FsmParseList[] fsmParseList = fsm.robustMorphologicalAnalysis(sentence);
-    boolean found = new boolean[sentence.wordCount()];
-    for (int j = 0; j < sentence.wordCount(); j++) {
-        DisambiguatedWord word = (DisambiguatedWord) sentence.getWord(j);
-        for (int k = 0; k < fsmParseList[j].size(); k++) {
-            if (word.getParse().toString().toUpperCase(new Locale("tr")).equals(fsmParseList[j].getFsmParse(k).toString().toUpperCase(new Locale("tr")))) {
-                found[j] = true;
-                break;
-            }
-        }
+    System.out.println("All parses");
+    System.out.println("--------------------------");
+    for(int i = 0; i < fsmParseList.length; i++){
+        System.out.println(fsmParseList[i]);
     }
     ArrayList<FsmParse> candidateParses = morphologicalDisambiguator.disambiguate(fsmParseList);
+    System.out.println("Parses after disambiguation");
+    System.out.println("--------------------------");
+    for(int i = 0; i < candidateParses.size(); i++){
+        System.out.println(candidateParses.get(i));
+    }
 
 Output
 
-    output should be here
     
+    All parses
+    --------------------------
+    yar+NOUN+A3SG+P2SG+NOM
+    yar+NOUN+A3SG+PNON+GEN
+    yar+VERB+POS+IMP+A2PL
+    yarı+NOUN+A3SG+P2SG+NOM
+    yarın+NOUN+A3SG+PNON+NOM
+    
+    doktor+NOUN+A3SG+PNON+DAT
+    doktora+NOUN+A3SG+PNON+NOM
+    
+    git+VERB+POS+FUT+A3PL
+    git+VERB+POS^DB+NOUN+FUTPART+A3PL+PNON+NOM
+    
+    Parses after disambiguation
+    --------------------------
+    yarın+NOUN+A3SG+PNON+NOM
+    doktor+NOUN+A3SG+PNON+DAT
+    git+VERB+POS+FUT+A3PL

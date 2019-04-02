@@ -26,8 +26,7 @@ public class DummyDisambiguation implements MorphologicalDisambiguator {
     public ArrayList<FsmParse> disambiguate(FsmParseList[] fsmParses) {
         Random random = new Random();
         ArrayList<FsmParse> correctFsmParses = new ArrayList<>();
-        for (int i = 0; i < fsmParses.length; i++) {
-            FsmParseList fsmParseList = fsmParses[i];
+        for (FsmParseList fsmParseList : fsmParses) {
             if (fsmParseList.size() > 0) {
                 correctFsmParses.add(fsmParseList.getFsmParse(random.nextInt(fsmParseList.size())));
             }

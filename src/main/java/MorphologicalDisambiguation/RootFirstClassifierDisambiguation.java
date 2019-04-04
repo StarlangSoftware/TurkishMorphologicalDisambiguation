@@ -77,9 +77,9 @@ public class RootFirstClassifierDisambiguation extends RootFirstDisambiguation {
      */
     private String classificationProblem(String disambiguationProblem, MorphologicalParse morphologicalParse) {
         String[] parses = disambiguationProblem.split("\\$");
-        for (int i = 0; i < parses.length; i++) {
-            if (morphologicalParse.toString().contains(parses[i])) {
-                return parses[i];
+        for (String parse : parses) {
+            if (morphologicalParse.toString().contains(parse)) {
+                return parse;
             }
         }
         return null;

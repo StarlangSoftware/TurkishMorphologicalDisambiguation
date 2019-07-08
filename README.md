@@ -106,7 +106,7 @@ Morphological Disambiguation
         <dependency>
             <groupId>NlpToolkit</groupId>
             <artifactId>Dictionary</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>NlpToolkit</groupId>

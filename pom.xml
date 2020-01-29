@@ -6,7 +6,7 @@
 
     <groupId>NlpToolkit</groupId>
     <artifactId>MorphologicalDisambiguation</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -31,12 +31,12 @@
         <dependency>
             <groupId>NlpToolkit</groupId>
             <artifactId>Dictionary</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.10</version>
         </dependency>
         <dependency>
             <groupId>NlpToolkit</groupId>
             <artifactId>MorphologicalAnalysis</artifactId>
-            <version>1.0.8</version>
+            <version>1.0.10</version>
         </dependency>
         <dependency>
             <groupId>NlpToolkit</groupId>

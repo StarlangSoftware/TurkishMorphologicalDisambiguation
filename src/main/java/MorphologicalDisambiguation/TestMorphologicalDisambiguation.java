@@ -111,12 +111,14 @@ public class TestMorphologicalDisambiguation {
     private static MorphologicalDisambiguator trainRootFirst(DisambiguationCorpus corpus){
         MorphologicalDisambiguator disambiguator = new RootFirstDisambiguation();
         train(disambiguator, corpus);
+        disambiguator.saveModel();
         return disambiguator;
     }
 
     private static MorphologicalDisambiguator trainHmm(DisambiguationCorpus corpus){
         MorphologicalDisambiguator disambiguator = new HmmDisambiguation();
         train(disambiguator, corpus);
+        disambiguator.saveModel();
         return disambiguator;
     }
 
@@ -127,18 +129,8 @@ public class TestMorphologicalDisambiguation {
     }
 
     public static void main(String[] args){
-        /*FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
-        DisambiguationCorpus corpus = new DisambiguationCorpus("Data/MorphologicalDisambiguation/penn_treebank.txt");
-        ExperimentPerformance[] performances = new ExperimentPerformance[3];
-        for (int i = 0; i < 3; i++){
-            performances[i] = new ExperimentPerformance();
-        }
-        corpus.shuffleSentences(1);
-        for (int i = 0; i < 10; i++){
-            DisambiguationCorpus trainCorpus = (DisambiguationCorpus) corpus.getTrainCorpus(i, 10);
-            DisambiguationCorpus testCorpus = (DisambiguationCorpus) corpus.getTestCorpus(i, 10);
-            MorphologicalDisambiguator disambiguator = trainClassifier(trainCorpus);
-            test(fsm, disambiguator, testCorpus, performances);
-        }*/
+        FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
+        DisambiguationCorpus corpus = new DisambiguationCorpus("milliyet.txt");
+        trainHmm(corpus);
     }
 }

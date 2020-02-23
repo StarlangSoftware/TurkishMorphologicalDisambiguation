@@ -6,7 +6,6 @@ import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
 import Ngram.*;
 
-import java.io.*;
 import java.util.ArrayList;
 
 public class HmmDisambiguation extends NaiveDisambiguation {
@@ -28,27 +27,30 @@ public class HmmDisambiguation extends NaiveDisambiguation {
         int i, j, k;
         Sentence sentence;
         DisambiguatedWord word, nextWord;
-        Word[] words = new Word[2];
-        Word[] igs = new Word[2];
-        wordUniGramModel = new NGram<Word>(1);
-        igUniGramModel = new NGram<Word>(1);
-        wordBiGramModel = new NGram<Word>(2);
-        igBiGramModel = new NGram<Word>(2);
+        Word[] words1 = new Word[1];
+        Word[] igs1 = new Word[1];
+        Word[] words2 = new Word[2];
+        Word[] igs2 = new Word[2];
+        wordUniGramModel = new NGram<>(1);
+        igUniGramModel = new NGram<>(1);
+        wordBiGramModel = new NGram<>(2);
+        igBiGramModel = new NGram<>(2);
         for (i = 0; i < corpus.sentenceCount(); i++) {
             sentence = corpus.getSentence(i);
             for (j = 0; j < sentence.wordCount() - 1; j++) {
                 word = (DisambiguatedWord) sentence.getWord(j);
                 nextWord = (DisambiguatedWord) sentence.getWord(j + 1);
-                words[0] = word.getParse().getWordWithPos();
-                words[1] = nextWord.getParse().getWordWithPos();
-                wordUniGramModel.addNGram(words);
-                wordBiGramModel.addNGram(words);
+                words2[0] = word.getParse().getWordWithPos();
+                words1[0] = words2[0];
+                words2[1] = nextWord.getParse().getWordWithPos();
+                wordUniGramModel.addNGram(words1);
+                wordBiGramModel.addNGram(words2);
                 for (k = 0; k < nextWord.getParse().size(); k++) {
-                    igs[0] = new Word(word.getParse().getLastInflectionalGroup().toString());
-                    igs[1] = new Word(nextWord.getParse().getInflectionalGroup(k).toString());
-                    igBiGramModel.addNGram(igs);
-                    igs[0] = igs[1];
-                    igUniGramModel.addNGram(igs);
+                    igs2[0] = new Word(word.getParse().getLastInflectionalGroup().toString());
+                    igs2[1] = new Word(nextWord.getParse().getInflectionalGroup(k).toString());
+                    igBiGramModel.addNGram(igs2);
+                    igs1[0] = igs2[1];
+                    igUniGramModel.addNGram(igs1);
                 }
             }
             if (i > 0 && i % 5000 == 0) {
@@ -57,8 +59,8 @@ public class HmmDisambiguation extends NaiveDisambiguation {
         }
         wordUniGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
         igUniGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
-        wordBiGramModel.calculateNGramProbabilities(new InterpolatedSmoothing<Word>(new LaplaceSmoothing<>()));
-        igBiGramModel.calculateNGramProbabilities(new InterpolatedSmoothing<Word>(new LaplaceSmoothing<>()));
+        wordBiGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
+        igBiGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
     }
 
     /**
@@ -81,9 +83,9 @@ public class HmmDisambiguation extends NaiveDisambiguation {
                 return null;
             }
         }
-        ArrayList<FsmParse> correctFsmParses = new ArrayList<FsmParse>();
-        double probabilities[][] = new double[fsmParses.length][];
-        int best[][] = new int[fsmParses.length][];
+        ArrayList<FsmParse> correctFsmParses = new ArrayList<>();
+        double[][] probabilities = new double[fsmParses.length][];
+        int[][] best = new int[fsmParses.length][];
         for (i = 0; i < fsmParses.length; i++) {
             probabilities[i] = new double[fsmParses[i].size()];
             best[i] = new int[fsmParses[i].size()];
@@ -149,8 +151,8 @@ public class HmmDisambiguation extends NaiveDisambiguation {
      */
     public void saveModel() {
         super.saveModel();
-        wordBiGramModel.save("words.2gram");
-        igBiGramModel.save("igs.2gram");
+        wordBiGramModel.saveAsText("words2.txt");
+        igBiGramModel.saveAsText("igs2-hmm.txt");
     }
 
     /**
@@ -158,15 +160,7 @@ public class HmmDisambiguation extends NaiveDisambiguation {
      */
     public void loadModel() {
         super.loadModel();
-        ObjectInputStream inObject;
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            inObject = new ObjectInputStream(classLoader.getResourceAsStream("words.2gram"));
-            wordBiGramModel = (NGram<Word>) inObject.readObject();
-            inObject = new ObjectInputStream(classLoader.getResourceAsStream("igs.2gram"));
-            igBiGramModel = (NGram<Word>) inObject.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-        }
+        wordBiGramModel = new NGram<>("words2.txt");
+        igBiGramModel = new NGram<>("igs2-hmm.txt");
     }
 }

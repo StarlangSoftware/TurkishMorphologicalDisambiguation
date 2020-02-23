@@ -13,32 +13,20 @@ public abstract class NaiveDisambiguation implements MorphologicalDisambiguator 
     protected NGram<Word> igUniGramModel;
 
     /**
-     * The saveModel method writes the specified objects i.e wordUniGramModel and igUniGramModel to the {@link java.io.ObjectOutputStream}
-     * words.1gram and igs.1gram.
+     * The saveModel method writes the specified objects i.e wordUniGramModel and igUniGramModel to the
+     * words1.txt and igs1.txt.
      */
     public void saveModel() {
-        wordUniGramModel.save("words.1gram");
-        igUniGramModel.save("igs.1gram");
+        wordUniGramModel.saveAsText("words1.txt");
+        igUniGramModel.saveAsText("igs1.txt");
     }
 
     /**
-     * The loadModel method reads objects at the {@link ObjectInputStream} words.1gram and igs.1gram to the wordUniGramModel and igUniGramModel.
+     * The loadModel method reads objects at the words1.txt and igs1.txt to the wordUniGramModel and igUniGramModel.
      */
     public void loadModel() {
-        ObjectInputStream inObject;
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            inObject = new ObjectInputStream(classLoader.getResourceAsStream("words.1gram"));
-            wordUniGramModel = (NGram<Word>) inObject.readObject();
-            inObject = new ObjectInputStream(classLoader.getResourceAsStream("igs.1gram"));
-            igUniGramModel = (NGram<Word>) inObject.readObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        wordUniGramModel = new NGram<>("words1.txt");
+        igUniGramModel = new NGram<>("igs1.txt");
     }
 
 

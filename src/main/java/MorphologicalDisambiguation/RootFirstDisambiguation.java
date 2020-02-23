@@ -6,8 +6,6 @@ import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
 import Ngram.*;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class RootFirstDisambiguation extends NaiveDisambiguation {
@@ -32,25 +30,29 @@ public class RootFirstDisambiguation extends NaiveDisambiguation {
         int i, j;
         Sentence sentence;
         DisambiguatedWord word;
-        Word[] words = new Word[2];
-        Word[] igs = new Word[2];
-        wordUniGramModel = new NGram<Word>(1);
-        wordBiGramModel = new NGram<Word>(2);
-        igUniGramModel = new NGram<Word>(1);
-        igBiGramModel = new NGram<Word>(2);
+        Word[] words1 = new Word[1];
+        Word[] igs1 = new Word[1];
+        Word[] words2 = new Word[2];
+        Word[] igs2 = new Word[2];
+        wordUniGramModel = new NGram<>(1);
+        wordBiGramModel = new NGram<>(2);
+        igUniGramModel = new NGram<>(1);
+        igBiGramModel = new NGram<>(2);
         for (i = 0; i < corpus.sentenceCount(); i++) {
             sentence = corpus.getSentence(i);
             for (j = 0; j < sentence.wordCount(); j++) {
                 word = (DisambiguatedWord) sentence.getWord(j);
-                words[0] = word.getParse().getWordWithPos();
-                wordUniGramModel.addNGram(words);
-                igs[0] = new Word(word.getParse().getTransitionList());
-                igUniGramModel.addNGram(igs);
+                words1[0] = word.getParse().getWordWithPos();
+                wordUniGramModel.addNGram(words1);
+                igs1[0] = new Word(word.getParse().getTransitionList());
+                igUniGramModel.addNGram(igs1);
                 if (j + 1 < sentence.wordCount()) {
-                    words[1] = ((DisambiguatedWord) sentence.getWord(j + 1)).getParse().getWordWithPos();
-                    wordBiGramModel.addNGram(words);
-                    igs[1] = new Word(((DisambiguatedWord) sentence.getWord(j + 1)).getParse().getTransitionList());
-                    igBiGramModel.addNGram(igs);
+                    words2[0] = words1[0];
+                    words2[1] = ((DisambiguatedWord) sentence.getWord(j + 1)).getParse().getWordWithPos();
+                    wordBiGramModel.addNGram(words2);
+                    igs2[0] = igs1[0];
+                    igs2[1] = new Word(((DisambiguatedWord) sentence.getWord(j + 1)).getParse().getTransitionList());
+                    igBiGramModel.addNGram(igs2);
                 }
             }
             if (i > 0 && i % 5000 == 0) {
@@ -59,8 +61,8 @@ public class RootFirstDisambiguation extends NaiveDisambiguation {
         }
         wordUniGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
         igUniGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
-        wordBiGramModel.calculateNGramProbabilities(new InterpolatedSmoothing<>(new LaplaceSmoothing()));
-        igBiGramModel.calculateNGramProbabilities(new InterpolatedSmoothing<>(new LaplaceSmoothing()));
+        wordBiGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
+        igBiGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
     }
 
     /**
@@ -158,7 +160,7 @@ public class RootFirstDisambiguation extends NaiveDisambiguation {
         int i;
         Word bestWord;
         FsmParse bestParse;
-        ArrayList<FsmParse> correctFsmParses = new ArrayList<FsmParse>();
+        ArrayList<FsmParse> correctFsmParses = new ArrayList<>();
         for (i = 0; i < fsmParses.length; i++) {
             bestWord = getBestRootWord(fsmParses[i]);
             fsmParses[i].reduceToParsesWithSameRootAndPos(bestWord);
@@ -175,8 +177,8 @@ public class RootFirstDisambiguation extends NaiveDisambiguation {
      */
     public void saveModel() {
         super.saveModel();
-        wordBiGramModel.save("words.2gram");
-        igBiGramModel.save("igs.2gram");
+        wordBiGramModel.saveAsText("words2.txt");
+        igBiGramModel.saveAsText("igs2.txt");
     }
 
     /**
@@ -184,15 +186,7 @@ public class RootFirstDisambiguation extends NaiveDisambiguation {
      */
     public void loadModel() {
         super.loadModel();
-        ObjectInputStream inObject;
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            inObject = new ObjectInputStream(classLoader.getResourceAsStream("words.2gram"));
-            wordBiGramModel = (NGram<Word>) inObject.readObject();
-            inObject = new ObjectInputStream(classLoader.getResourceAsStream("igs.2gram"));
-            igBiGramModel = (NGram<Word>) inObject.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-        }
+        wordBiGramModel = new NGram<>("words2.txt");
+        igBiGramModel = new NGram<>("igs2.txt");
     }
 }

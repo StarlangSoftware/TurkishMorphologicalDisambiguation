@@ -152,7 +152,7 @@ public class HmmDisambiguation extends NaiveDisambiguation {
     public void saveModel() {
         super.saveModel();
         wordBiGramModel.saveAsText("words2.txt");
-        igBiGramModel.saveAsText("igs2-hmm.txt");
+        igBiGramModel.saveAsText("igs2.txt");
     }
 
     /**
@@ -161,6 +161,6 @@ public class HmmDisambiguation extends NaiveDisambiguation {
     public void loadModel() {
         super.loadModel();
         wordBiGramModel = new NGram<>("words2.txt");
-        igBiGramModel = new NGram<>("igs2-hmm.txt");
+        igBiGramModel = new NGram<>("igs2.txt");
     }
 }

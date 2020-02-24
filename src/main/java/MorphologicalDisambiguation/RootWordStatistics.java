@@ -40,6 +40,7 @@ public class RootWordStatistics implements Serializable {
         String line, rootWord;
         String[] items;
         int size, count;
+        statistics = new HashMap<>();
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             size = Integer.parseInt(br.readLine());

@@ -129,8 +129,9 @@ public class TestMorphologicalDisambiguation {
     }
 
     public static void main(String[] args){
-        FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
+        /*FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
         DisambiguationCorpus corpus = new DisambiguationCorpus("milliyet.txt");
-        trainHmm(corpus);
+        trainHmm(corpus);*/
+        RootWordStatistics statistics = new RootWordStatistics("penntreebank_statistics.txt");
     }
 }

@@ -4,6 +4,7 @@ import DataStructure.CounterHashMap;
 import MorphologicalAnalysis.FsmParseList;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 public class RootWordStatistics implements Serializable {
@@ -22,14 +23,8 @@ public class RootWordStatistics implements Serializable {
      * @param fileName File to get statistics.
      */
     public RootWordStatistics(String fileName) {
-        ObjectInputStream inObject;
-        try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            inObject = new ObjectInputStream(classLoader.getResourceAsStream(fileName));
-            statistics = (HashMap<String, CounterHashMap<String>>) inObject.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-        }
+        ClassLoader classLoader = getClass().getClassLoader();
+        readFromFile(classLoader.getResourceAsStream(fileName));
     }
 
     /**
@@ -38,14 +33,34 @@ public class RootWordStatistics implements Serializable {
      * @param inputStream File to get statistics.
      */
     public RootWordStatistics(FileInputStream inputStream){
-        ObjectInputStream inObject;
+        readFromFile(inputStream);
+    }
+
+    private void readFromFile(InputStream inputStream){
+        String line, rootWord;
+        String[] items;
+        int size, count;
         try {
-            inObject = new ObjectInputStream(inputStream);
-            statistics = (HashMap<String, CounterHashMap<String>>) inObject.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            size = Integer.parseInt(br.readLine());
+            for (int i = 0; i < size; i++){
+                line = br.readLine();
+                items = line.split(" ");
+                rootWord = items[0];
+                count = Integer.parseInt(items[1]);
+                CounterHashMap<String> map = new CounterHashMap<>();
+                for (int j = 0; j < count; j++){
+                    line = br.readLine();
+                    items = line.split(" ");
+                    map.putNTimes(items[0], Integer.parseInt(items[1]));
+                }
+                statistics.put(rootWord, map);
+            }
+            br.close();
+        } catch (IOException e) {
         }
     }
+
     /**
      * Method to check whether statistics contains the given String.
      *
@@ -82,14 +97,17 @@ public class RootWordStatistics implements Serializable {
      * @param fileName File to save the statistics.
      */
     public void saveStatistics(String fileName) {
-        FileOutputStream outFile;
-        ObjectOutputStream outObject;
+        BufferedWriter fw;
         try {
-            outFile = new FileOutputStream(fileName);
-            outObject = new ObjectOutputStream(outFile);
-            outObject.writeObject(statistics);
+            fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8));
+            fw.write(statistics.size() + "\n");
+            for (String rootWord : statistics.keySet()){
+                CounterHashMap<String> map = statistics.get(rootWord);
+                fw.write(rootWord + " " + map.size() + "\n");
+                fw.write(map.toString());
+            }
+            fw.close();
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

@@ -6,7 +6,7 @@
 
     <groupId>NlpToolkit</groupId>
     <artifactId>MorphologicalDisambiguation</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>NlpToolkit</groupId>
             <artifactId>DataStructure</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 

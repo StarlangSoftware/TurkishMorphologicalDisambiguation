@@ -86,37 +86,39 @@ Use below line to generate jar file:
 
      mvn install
 
-
-------------------------------------------------
-
-Morphological Disambiguation
-============
-+ [Maven Usage](#maven-usage)
-+ [Creating MorphologicalDisambiguator](#creating-morphologicaldisambiguator)
-+ [Training MorphologicalDisambiguator](#training-morphologicaldisambiguator)
-+ [Sentence Disambiguation](#sentence-disambiguation)
-
-### Maven Usage
+## Maven Usage
 
 	<dependency>
   	<groupId>NlpToolkit</groupId>
   	<artifactId>MorphologicalDisambiguation</artifactId>
   	<version>1.0.9</version>
 	</dependency>
+	
+------------------------------------------------
+
+Morphological Disambiguation
+============
++ [Creating MorphologicalDisambiguator](#creating-morphologicaldisambiguator)
++ [Training MorphologicalDisambiguator](#training-morphologicaldisambiguator)
++ [Sentence Disambiguation](#sentence-disambiguation)
 
 ## Creating MorphologicalDisambiguator 
 
 MorphologicalDisambiguator provides Turkish morphological disambiguation. There are possible disambiguation techniques. Depending on the technique used, disambiguator can be instantiated as follows:
 
-* Using `RootFirstDisambiguation`,
+* Using `RootFirstDisambiguation`, Var olan analizlerden sadece kökü seçen
 
         MorphologicalDisambiguator morphologicalDisambiguator = new RootFirstDisambiguation();
-    
-* Using `HmmDisambiguation`,
+
+* Using `LongestRootFirstDisambiguation`, Var olan analizlerden önce kökü en çok geçen kökü kullanarak seçen
+
+        MorphologicalDisambiguator morphologicalDisambiguator = new LongestRootFirstDisambiguation();
+
+* Using `HmmDisambiguation`, Var olan analizlerden Hmm tabanlı bir algoritma ile analizi seçen
         
         MorphologicalDisambiguator morphologicalDisambiguator = new HmmDisambiguation();
 
-* Using `DummyDisambiguation`,
+* Using `DummyDisambiguation`, Var olan analizlerden rasgele birini seçen 
      
         MorphologicalDisambiguator morphologicalDisambiguator = new DummyDisambiguation();
     

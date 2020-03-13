@@ -96,7 +96,7 @@ Use below line to generate jar file:
 	
 ------------------------------------------------
 
-Morphological Disambiguation
+Detailed Description
 ============
 + [Creating MorphologicalDisambiguator](#creating-morphologicaldisambiguator)
 + [Training MorphologicalDisambiguator](#training-morphologicaldisambiguator)

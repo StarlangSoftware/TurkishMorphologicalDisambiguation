@@ -66,7 +66,7 @@ public class RootWordStatistics implements Serializable {
      * Method to check whether statistics contains the given String.
      *
      * @param key String to look for.
-     * @return Returns <tt>true</tt> if this map contains a mapping for the specified key.
+     * @return Returns true if this map contains a mapping for the specified key.
      */
     public boolean containsKey(String key) {
         return statistics.containsKey(key);

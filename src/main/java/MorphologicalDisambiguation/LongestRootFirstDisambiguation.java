@@ -27,17 +27,9 @@ public class LongestRootFirstDisambiguation implements MorphologicalDisambiguato
     @Override
     public ArrayList<FsmParse> disambiguate(FsmParseList[] fsmParses) {
         FsmParse bestParse;
-        int maxLength;
         ArrayList<FsmParse> correctFsmParses = new ArrayList<>();
         for (FsmParseList fsmParseList : fsmParses) {
-            maxLength = -1;
-            bestParse = null;
-            for (int i = 0; i < fsmParseList.size(); i++){
-                if (fsmParseList.getFsmParse(i).getWord().getName().length() > maxLength){
-                    maxLength = fsmParseList.getFsmParse(i).getWord().getName().length();
-                    bestParse = fsmParseList.getFsmParse(i);
-                }
-            }
+            bestParse = fsmParseList.getParseWithLongestRootWord();
             if (bestParse != null){
                 correctFsmParses.add(bestParse);
             }

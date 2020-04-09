@@ -176,3 +176,16 @@ Output
     yarın+NOUN+A3SG+PNON+NOM
     doktor+NOUN+A3SG+PNON+DAT
     git+VERB+POS+FUT+A3PL
+
+## Cite
+If you use this resource on your research, please cite the following paper: 
+
+```
+@incollection{gorgun11,
+  title={A novel approach to morphological disambiguation for {T}urkish},
+  author={G{\"o}rg{\"u}n, Onur and Yildiz, Olcay Taner},
+  booktitle={Computer and Information Sciences II},
+  pages={77--83},
+  year={2011},
+  publisher={Springer}
+}

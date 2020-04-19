@@ -1,7 +1,6 @@
 package MorphologicalDisambiguation;
 
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
-import MorphologicalDisambiguation.RootWordStatistics;
 
 public abstract class AutoDisambiguator {
 

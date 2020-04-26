@@ -19,8 +19,8 @@ Then the morphological disambiguation problem can be defined as follows: For a g
 
 For Developers
 ============
-You can also see either [Python](https://github.com/olcaytaner/TurkishMorphologicalDisambiguation-Py) 
-or [C++](https://github.com/olcaytaner/TurkishMorphologicalDisambiguation-CPP) repository.
+
+You can also see [Python](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Py), [C++](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CPP), or [C#](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CS) repository.
 
 ## Requirements
 

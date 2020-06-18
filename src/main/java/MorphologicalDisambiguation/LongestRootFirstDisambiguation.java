@@ -30,9 +30,12 @@ public class LongestRootFirstDisambiguation implements MorphologicalDisambiguato
         ArrayList<FsmParse> correctFsmParses = new ArrayList<>();
         for (FsmParseList fsmParseList : fsmParses) {
             bestParse = fsmParseList.getParseWithLongestRootWord();
-            if (bestParse != null){
-                correctFsmParses.add(bestParse);
+            fsmParseList.reduceToParsesWithSameRootAndPos(bestParse.getWordWithPos());
+            FsmParse newBestParse = fsmParseList.caseDisambiguator();
+            if (newBestParse != null){
+                bestParse = newBestParse;
             }
+            correctFsmParses.add(bestParse);
         }
         return correctFsmParses;
     }

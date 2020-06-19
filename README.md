@@ -37,7 +37,7 @@ Use Git for cloning the code to your local or below line for Ubuntu:
 
 A directory called MorphologicalDisambiguation will be created. Or you can use below link for exploring the code:
 
-	git clone https://github.com/starlangsoftware/MorphologicalDisambiguation.git
+	git clone https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation.git
 
 ## Open project with IntelliJ IDEA
 

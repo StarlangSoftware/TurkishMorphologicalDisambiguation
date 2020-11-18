@@ -121,10 +121,15 @@ public class RootWordStatistics implements Serializable {
      * @return The max value for the root word.
      */
     public String bestRootWord(FsmParseList parseList, double threshold) {
-        String rootWords = parseList.rootWords();
-        if (statistics.containsKey(rootWords)) {
-            CounterHashMap<String> rootWordStatistics = statistics.get(rootWords);
-            return rootWordStatistics.max(threshold);
+        String surfaceForm = parseList.getFsmParse(0).getSurfaceForm();
+        if (statistics.containsKey(surfaceForm)) {
+            CounterHashMap<String> rootWordStatistics = statistics.get(surfaceForm);
+            String rootWord = rootWordStatistics.max(threshold);
+            for (int i = 0; i < parseList.size(); i++){
+                if (parseList.getFsmParse(i).getWord().getName().equals(rootWord)){
+                    return rootWord;
+                }
+            }
         }
         return null;
     }

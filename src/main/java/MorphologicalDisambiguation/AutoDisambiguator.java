@@ -171,7 +171,7 @@ public abstract class AutoDisambiguator {
                 if (isBeforeLastWord(index, fsmParses)) {
                     return "VERB+POS";
                 }
-                /* ile */
+                /* İLE */
             case "CONJ$POSTP+PCNOM":
                 return "POSTP+PCNOM";
                 /* gelecek */

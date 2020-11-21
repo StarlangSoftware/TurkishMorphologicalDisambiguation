@@ -36,7 +36,7 @@ public class RootWordStatisticsDisambiguationTest {
                 }
             }
         }
-        assertEquals(0.9730, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
+        assertEquals(0.9729, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
         assertEquals(0.8683, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
     }
 

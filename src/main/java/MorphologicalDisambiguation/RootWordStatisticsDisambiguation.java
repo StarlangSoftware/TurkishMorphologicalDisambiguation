@@ -23,6 +23,9 @@ public class RootWordStatisticsDisambiguation implements MorphologicalDisambigua
             String rootWords = fsmParseList.rootWords();
             if (rootWords.contains("$")){
                 bestRoot = rootWordStatistics.bestRootWord(fsmParseList, 0.0);
+                if (bestRoot == null){
+                    bestRoot = fsmParseList.getParseWithLongestRootWord().getWord().getName();
+                }
             } else {
                 bestRoot = rootWords;
             }

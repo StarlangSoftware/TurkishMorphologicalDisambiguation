@@ -53,9 +53,6 @@ public class HmmDisambiguation extends NaiveDisambiguation {
                     igUniGramModel.addNGram(igs1);
                 }
             }
-            if (i > 0 && i % 5000 == 0) {
-                System.out.println("Trained " + i + " of sentences of " + corpus.sentenceCount());
-            }
         }
         wordUniGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());
         igUniGramModel.calculateNGramProbabilities(new LaplaceSmoothing<>());

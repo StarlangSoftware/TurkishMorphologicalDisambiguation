@@ -79,6 +79,7 @@ public abstract class AutoDisambiguator {
     private static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         String surfaceForm = fsmParses[index].getFsmParse(0).getSurfaceForm();
         String root = fsmParses[index].getFsmParse(0).getWord().getName();
+        String lastWord = fsmParses[fsmParses.length - 1].getFsmParse(0).getSurfaceForm();
         switch (parseString) {
             /* kısmını, duracağını, grubunun */
             case "P2SG$P3SG":
@@ -297,7 +298,6 @@ public abstract class AutoDisambiguator {
                 return "POS+PROG2";
                 /* NE */
             case "ADJ$ADV$CONJ$PRON+QUESP+A3SG+PNON+NOM":
-                String lastWord = fsmParses[fsmParses.length - 1].getFsmParse(0).getSurfaceForm();
                 if (lastWord.equals("?")) {
                     return "PRON+QUESP+A3SG+PNON+NOM";
                 }
@@ -320,11 +320,14 @@ public abstract class AutoDisambiguator {
                     return "ADJ";
                 }
                 return "ADV";
+                /* görülmedik */
             case "NEG+PAST+A1PL$NEG^DB+ADJ+PASTPART+PNON$NEG^DB+NOUN+PASTPART+A3SG+PNON+NOM":
                 if (surfaceForm.equals("alışılmadık")) {
                     return "NEG^DB+ADJ+PASTPART+PNON";
                 }
                 return "NEG+PAST+A1PL";
+            case "DATE$NUM+FRACTION":
+                return "NUM+FRACTION";
             default:
                 break;
         }

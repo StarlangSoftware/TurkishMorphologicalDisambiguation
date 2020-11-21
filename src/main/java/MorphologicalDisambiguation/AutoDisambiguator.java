@@ -49,6 +49,10 @@ public abstract class AutoDisambiguator {
         return index + 1 < fsmParses.length && nextWordPos(fsmParses[index + 1]).equals("NOUN");
     }
 
+    private static boolean isNextWordNounOrAdjective(int index, FsmParseList[] fsmParses) {
+        return index + 1 < fsmParses.length && (nextWordPos(fsmParses[index + 1]).equals("NOUN") || nextWordPos(fsmParses[index + 1]).equals("ADJ"));
+    }
+
     private static boolean isFirstWord(int index){
         return index == 0;
     }
@@ -59,6 +63,7 @@ public abstract class AutoDisambiguator {
 
     private static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         String surfaceForm = fsmParses[index].getFsmParse(0).getSurfaceForm();
+        String root = fsmParses[index].getFsmParse(0).getWord().getName();
         switch (parseString) {
             /* kısmını, duracağını, grubunun */
             case "P2SG$P3SG":
@@ -96,6 +101,8 @@ public abstract class AutoDisambiguator {
                 return "PNON+GEN";
                 /* ÇOK */
             case "ADJ$ADV$DET$POSTP+PCABL":
+                /* FAZLA */
+            case "ADJ$ADV$POSTP+PCABL":
                 if (index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE)) {
                     return "POSTP+PCABL";
                 }
@@ -112,7 +119,7 @@ public abstract class AutoDisambiguator {
                     }
                 }
             case "ADJ$NOUN+A3SG+PNON+NOM":
-                if (isNextWordNoun(index, fsmParses)) {
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
                     return "ADJ";
                 }
                 return "NOUN+A3SG+PNON+NOM";
@@ -146,7 +153,7 @@ public abstract class AutoDisambiguator {
                 } else if (isFirstWord(index)) {
                     return "AOR^DB+ADJ+ZERO";
                 } else {
-                    if (isNextWordNoun(index, fsmParses)) {
+                    if (isNextWordNounOrAdjective(index, fsmParses)) {
                         return "AOR^DB+ADJ+ZERO";
                     } else {
                         return "AOR+A3SG";
@@ -178,6 +185,77 @@ public abstract class AutoDisambiguator {
                     return "POS+FUT+A3SG";
                 }
                 return "POS^DB+ADJ+FUTPART+PNON";
+            case "ADJ^DB$NOUN+A3SG+PNON+NOM^DB":
+                if (root.equals("yok") || root.equals("düşük") || root.equals("eksik") || root.equals("rahat") || root.equals("orta") || root.equals("vasat")) {
+                    return "ADJ^DB";
+                }
+                return "NOUN+A3SG+PNON+NOM^DB";
+                /* yaptık, şüphelendik */
+            case "POS+PAST+A1PL$POS^DB+ADJ+PASTPART+PNON$POS^DB+NOUN+PASTPART+A3SG+PNON+NOM":
+                return "POS+PAST+A1PL";
+                /* ederim, yaparım */
+            case "AOR+A1SG$AOR^DB+ADJ+ZERO^DB+NOUN+ZERO+A3SG+P1SG+NOM":
+                return "AOR+A1SG";
+                /* geçti, vardı, aldı */
+            case "ADJ^DB+VERB+ZERO$VERB+POS":
+                if (root.equals("var") && !isPossessivePlural(index, correctParses)) {
+                    return "ADJ^DB+VERB+ZERO";
+                }
+                return "VERB+POS";
+                /* ancak */
+            case "ADV$CONJ":
+                return "CONJ";
+                /* yaptığı, ettiği */
+            case "ADJ+PASTPART+P3SG$NOUN+PASTPART+A3SG+P3SG+NOM":
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "ADJ+PASTPART+P3SG";
+                }
+                return "NOUN+PASTPART+A3SG+P3SG+NOM";
+                /* ÖNCE, SONRA */
+            case "ADV$NOUN+A3SG+PNON+NOM$POSTP+PCABL":
+                if (index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE)) {
+                    return "POSTP+PCABL";
+                }
+                return "ADV";
+            case "NARR+A3SG$NARR^DB+ADJ+ZERO":
+                if (isBeforeLastWord(index, fsmParses)) {
+                    return "NARR+A3SG";
+                }
+                return "NARR^DB+ADJ+ZERO";
+            case "ADJ$NOUN+A3SG+PNON+NOM$NOUN+PROP+A3SG+PNON+NOM":
+                if (index > 0) {
+                    if (isCapital(surfaceForm)) {
+                        return "NOUN+PROP+A3SG+PNON+NOM";
+                    }
+                } else {
+                    if (isNextWordNounOrAdjective(index, fsmParses)) {
+                        return "ADJ";
+                    }
+                    return "NOUN+A3SG+PNON+NOM";
+                }
+                /* ödediğim */
+            case "ADJ+PASTPART+P1SG$NOUN+PASTPART+A3SG+P1SG+NOM":
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "ADJ+PASTPART+P1SG";
+                }
+                return "NOUN+PASTPART+A3SG+P1SG+NOM";
+                /* O */
+            case "DET$PRON+DEMONSP+A3SG+PNON+NOM$PRON+PERS+A3SG+PNON+NOM":
+                if (isNextWordNoun(index, fsmParses)) {
+                    return "DET";
+                }
+                return "PRON+PERS+A3SG+PNON+NOM";
+                /* BAZI */
+            case "ADJ$DET$PRON+QUANTP+A3SG+P3SG+NOM":
+                return "DET";
+                /* ONUN, ONA, ONDAN, ONUNLA, OYDU, ONUNKİ */
+            case "DEMONSP$PERS":
+                return "PERS";
+            case "ADJ$NOUN+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "ADJ";
+                }
+                return "NOUN+A3SG+PNON+NOM";
             default:
                 break;
         }

@@ -28,14 +28,16 @@ public class LongestRootFirstDisambiguation implements MorphologicalDisambiguato
     public ArrayList<FsmParse> disambiguate(FsmParseList[] fsmParses) {
         FsmParse bestParse;
         ArrayList<FsmParse> correctFsmParses = new ArrayList<>();
+        int i = 0;
         for (FsmParseList fsmParseList : fsmParses) {
             bestParse = fsmParseList.getParseWithLongestRootWord();
-            fsmParseList.reduceToParsesWithSameRootAndPos(bestParse.getWordWithPos());
-            FsmParse newBestParse = fsmParseList.caseDisambiguator();
+            fsmParseList.reduceToParsesWithSameRoot(bestParse.getWord().getName());
+            FsmParse newBestParse = AutoDisambiguator.caseDisambiguator(i, fsmParses, correctFsmParses);
             if (newBestParse != null){
                 bestParse = newBestParse;
             }
             correctFsmParses.add(bestParse);
+            i++;
         }
         return correctFsmParses;
     }

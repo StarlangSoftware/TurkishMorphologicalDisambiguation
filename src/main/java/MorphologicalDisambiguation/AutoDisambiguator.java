@@ -64,7 +64,7 @@ public abstract class AutoDisambiguator {
         return Word.isCapital(surfaceForm);
     }
 
-    public static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
+    private static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         String surfaceForm = fsmParses[index].getFsmParse(0).getSurfaceForm();
         switch (parseString) {
             /* kısmını, duracağını, grubunun */
@@ -98,7 +98,7 @@ public abstract class AutoDisambiguator {
                 return "PNON+GEN";
                 /* ÇOK */
             case "ADJ$ADV$DET$POSTP+PCABL":
-                if (correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE)) {
+                if (index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE)) {
                     return "POSTP+PCABL";
                 }
                 if (index + 1 < fsmParses.length) {
@@ -185,4 +185,23 @@ public abstract class AutoDisambiguator {
         }
         return null;
     }
+
+    public static FsmParse caseDisambiguator(int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
+        FsmParseList fsmParseList = fsmParses[index];
+        FsmParse defaultParse = fsmParseList.caseDisambiguator();
+        if (defaultParse != null){
+            return defaultParse;
+        }
+        String defaultCase = selectCaseForParseString(fsmParses[index].parsesWithoutPrefixAndSuffix(), index, fsmParses, correctParses);
+        if (defaultCase != null) {
+            for (int i = 0; i < fsmParseList.size(); i++) {
+                FsmParse fsmParse = fsmParseList.getFsmParse(i);
+                if (fsmParse.transitionList().contains(defaultCase)) {
+                    return fsmParse;
+                }
+            }
+        }
+        return null;
+    }
+
 }

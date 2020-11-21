@@ -16,12 +16,19 @@ public class RootWordStatisticsDisambiguation implements MorphologicalDisambigua
     @Override
     public ArrayList<FsmParse> disambiguate(FsmParseList[] fsmParses) {
         FsmParse bestParse;
+        String bestRoot;
         ArrayList<FsmParse> correctFsmParses = new ArrayList<>();
+        int i = 0;
         for (FsmParseList fsmParseList : fsmParses) {
-            String bestRoot = rootWordStatistics.bestRootWord(fsmParseList, 0.0);
+            String rootWords = fsmParseList.rootWords();
+            if (rootWords.contains("$")){
+                bestRoot = rootWordStatistics.bestRootWord(fsmParseList, 0.0);
+            } else {
+                bestRoot = rootWords;
+            }
             if (bestRoot != null){
                 fsmParseList.reduceToParsesWithSameRoot(bestRoot);
-                FsmParse newBestParse = fsmParseList.caseDisambiguator();
+                FsmParse newBestParse = AutoDisambiguator.caseDisambiguator(i, fsmParses, correctFsmParses);
                 if (newBestParse != null){
                     bestParse = newBestParse;
                 } else {
@@ -31,6 +38,7 @@ public class RootWordStatisticsDisambiguation implements MorphologicalDisambigua
                 bestParse = fsmParseList.getFsmParse(0);
             }
             correctFsmParses.add(bestParse);
+            i++;
         }
         return correctFsmParses;
     }

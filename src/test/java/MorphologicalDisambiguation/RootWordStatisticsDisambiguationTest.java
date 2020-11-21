@@ -6,6 +6,7 @@ import MorphologicalAnalysis.FsmParseList;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,16 +25,19 @@ public class RootWordStatisticsDisambiguationTest {
             ArrayList<FsmParse> fsmParses =  algorithm.disambiguate(sentenceAnalyses);
             for (int j = 0; j < corpus.getSentence(i).wordCount(); j++){
                 DisambiguatedWord word = (DisambiguatedWord) corpus.getSentence(i).getWord(j);
-                if (fsmParses.get(j).transitionList().equals(word.getParse().toString())){
+                if (fsmParses.get(j).transitionList().toLowerCase(new Locale("tr")).equals(word.getParse().toString().toLowerCase(new Locale("tr")))){
                     correctParse++;
-                }
-                if (fsmParses.get(j).getWord().equals(word.getParse().getWord())){
                     correctRoot++;
+                } else {
+                    if (fsmParses.get(j).getWord().equals(word.getParse().getWord())){
+                        correctRoot++;
+                        System.out.println(fsmParses.get(j).transitionList() + "\t" + word.getParse().toString());
+                    }
                 }
             }
         }
-        assertEquals(0.9730, (correctRoot + 0.0) / corpus.numberOfWords(), 0.002);
-        assertEquals(0.8133, (correctParse + 0.0) / corpus.numberOfWords(), 0.002);
+        assertEquals(0.9730, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
+        assertEquals(0.8687, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
     }
 
 }

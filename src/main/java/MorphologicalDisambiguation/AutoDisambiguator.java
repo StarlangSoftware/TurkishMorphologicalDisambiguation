@@ -14,21 +14,14 @@ public abstract class AutoDisambiguator {
     protected FsmMorphologicalAnalyzer morphologicalAnalyzer;
     protected RootWordStatistics rootWordStatistics;
 
-    private static boolean isAnyWordSecondPerson(FsmParseList[] fsmParses) {
+    private static boolean isAnyWordSecondPerson(int index, ArrayList<FsmParse> correctParses) {
         int count = 0;
-        for (FsmParseList fsmPars : fsmParses) {
-            boolean secondSingular = false;
-            for (int j = 0; j < fsmPars.size(); j++) {
-                if (fsmPars.getFsmParse(j).containsTag(MorphologicalTag.A2SG) || fsmPars.getFsmParse(j).containsTag(MorphologicalTag.P2SG)) {
-                    secondSingular = true;
-                    break;
-                }
-            }
-            if (secondSingular) {
+        for (int i = index - 1; i >= 0; i--) {
+            if (correctParses.get(i).containsTag(MorphologicalTag.A2SG) || correctParses.get(i).containsTag(MorphologicalTag.P2SG)) {
                 count++;
             }
         }
-        return count >= 2;
+        return count >= 1;
     }
 
     private static boolean isPossessivePlural(int index, ArrayList<FsmParse> correctParses) {
@@ -69,11 +62,16 @@ public abstract class AutoDisambiguator {
         switch (parseString) {
             /* kısmını, duracağını, grubunun */
             case "P2SG$P3SG":
-                if (isAnyWordSecondPerson(fsmParses)) {
+                if (isAnyWordSecondPerson(index, correctParses)) {
                     return "P2SG";
                 }
                 return "P3SG";
                 /* BİR */
+            case "A2SG+P2SG$A3SG+P3SG":
+                if (isAnyWordSecondPerson(index, correctParses)) {
+                    return "A2SG+P2SG";
+                }
+                return "A3SG+P3SG";
             case "ADJ$ADV$DET$NUM+CARD":
                 return "DET";
                 /* tahminleri, işleri, hisseleri */
@@ -92,7 +90,7 @@ public abstract class AutoDisambiguator {
                 }
                 /* şirketin, seçimlerin, borsacıların, kitapların */
             case "P2SG+NOM$PNON+GEN":
-                if (isAnyWordSecondPerson(fsmParses)) {
+                if (isAnyWordSecondPerson(index, correctParses)) {
                     return "P2SG+NOM";
                 }
                 return "PNON+GEN";
@@ -120,7 +118,7 @@ public abstract class AutoDisambiguator {
                 return "NOUN+A3SG+PNON+NOM";
                 /* fanatiklerini, senetlerini, olduklarını */
             case "A3PL+P2SG$A3PL+P3PL$A3PL+P3SG$A3SG+P3PL":
-                if (isAnyWordSecondPerson(fsmParses)) {
+                if (isAnyWordSecondPerson(index, correctParses)) {
                     return "A3PL+P2SG";
                 }
                 if (isPossessivePlural(index, correctParses)) {
@@ -162,7 +160,7 @@ public abstract class AutoDisambiguator {
                 }
                 return "ADV";
             case "P2SG$PNON":
-                if (isAnyWordSecondPerson(fsmParses)) {
+                if (isAnyWordSecondPerson(index, correctParses)) {
                     return "P2SG";
                 }
                 return "PNON";

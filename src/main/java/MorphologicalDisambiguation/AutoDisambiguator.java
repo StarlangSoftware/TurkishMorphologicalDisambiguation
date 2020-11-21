@@ -66,12 +66,12 @@ public abstract class AutoDisambiguator {
                     return "P2SG";
                 }
                 return "P3SG";
-                /* BİR */
             case "A2SG+P2SG$A3SG+P3SG":
                 if (isAnyWordSecondPerson(index, correctParses)) {
                     return "A2SG+P2SG";
                 }
                 return "A3SG+P3SG";
+            /* BİR */
             case "ADJ$ADV$DET$NUM+CARD":
                 return "DET";
                 /* tahminleri, işleri, hisseleri */

@@ -61,6 +61,21 @@ public abstract class AutoDisambiguator {
         return Word.isCapital(surfaceForm);
     }
 
+    private static boolean containsTwoNe(FsmParseList[] fsmParses) {
+        int count = 0;
+        for (FsmParseList fsmPars : fsmParses) {
+            String surfaceForm = fsmPars.getFsmParse(0).getSurfaceForm();
+            if (surfaceForm.equals("ne")) {
+                count++;
+            }
+        }
+        return count == 2;
+    }
+
+    private static boolean isPreviousWordAblative(int index, ArrayList<FsmParse> correctParses) {
+        return index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE);
+    }
+
     private static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         String surfaceForm = fsmParses[index].getFsmParse(0).getSurfaceForm();
         String root = fsmParses[index].getFsmParse(0).getWord().getName();
@@ -103,7 +118,7 @@ public abstract class AutoDisambiguator {
             case "ADJ$ADV$DET$POSTP+PCABL":
                 /* FAZLA */
             case "ADJ$ADV$POSTP+PCABL":
-                if (index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE)) {
+                if (isPreviousWordAblative(index, correctParses)) {
                     return "POSTP+PCABL";
                 }
                 if (index + 1 < fsmParses.length) {
@@ -213,7 +228,7 @@ public abstract class AutoDisambiguator {
                 return "NOUN+PASTPART+A3SG+P3SG+NOM";
                 /* ÖNCE, SONRA */
             case "ADV$NOUN+A3SG+PNON+NOM$POSTP+PCABL":
-                if (index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE)) {
+                if (isPreviousWordAblative(index, correctParses)) {
                     return "POSTP+PCABL";
                 }
                 return "ADV";
@@ -256,6 +271,60 @@ public abstract class AutoDisambiguator {
                     return "ADJ";
                 }
                 return "NOUN+A3SG+PNON+NOM";
+                /* hazineler, kıymetler */
+            case "A3PL+PNON+NOM$A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A3PL$PROP+A3PL+PNON+NOM":
+                if (index > 0) {
+                    if (isCapital(surfaceForm)) {
+                        return "PROP+A3PL+PNON+NOM";
+                    }
+                    return "A3PL+PNON+NOM";
+                }
+                /* ARTIK, GERİ */
+            case "ADJ$ADV$NOUN+A3SG+PNON+NOM":
+                if (root.equals("artık")) {
+                    return "ADV";
+                } else if (isNextWordNoun(index, fsmParses)) {
+                    return "ADJ";
+                }
+                return "ADV";
+            case "P1SG+NOM$PNON+NOM^DB+VERB+ZERO+PRES+A1SG":
+                if (isBeforeLastWord(index, fsmParses) || root.equals("değil")) {
+                    return "PNON+NOM^DB+VERB+ZERO+PRES+A1SG";
+                }
+                return "P1SG+NOM";
+                /* görülmektedir */
+            case "POS+PROG2$POS^DB+NOUN+INF+A3SG+PNON+LOC^DB+VERB+ZERO+PRES":
+                return "POS+PROG2";
+                /* NE */
+            case "ADJ$ADV$CONJ$PRON+QUESP+A3SG+PNON+NOM":
+                String lastWord = fsmParses[fsmParses.length - 1].getFsmParse(0).getSurfaceForm();
+                if (lastWord.equals("?")) {
+                    return "PRON+QUESP+A3SG+PNON+NOM";
+                }
+                if (containsTwoNe(fsmParses)) {
+                    return "CONJ";
+                }
+                if (isNextWordNoun(index, fsmParses)) {
+                    return "ADJ";
+                }
+                return "ADV";
+                /* TÜM */
+            case "DET$NOUN+A3SG+PNON+NOM":
+                return "DET";
+                /* AZ */
+            case "ADJ$ADV$POSTP+PCABL$VERB+POS+IMP+A2SG":
+                if (isPreviousWordAblative(index, correctParses)) {
+                    return "POSTP+PCABL";
+                }
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "ADJ";
+                }
+                return "ADV";
+            case "NEG+PAST+A1PL$NEG^DB+ADJ+PASTPART+PNON$NEG^DB+NOUN+PASTPART+A3SG+PNON+NOM":
+                if (surfaceForm.equals("alışılmadık")) {
+                    return "NEG^DB+ADJ+PASTPART+PNON";
+                }
+                return "NEG+PAST+A1PL";
             default:
                 break;
         }

@@ -69,14 +69,8 @@ public abstract class AutoDisambiguator {
         int count = 0;
         for (FsmParseList fsmPars : fsmParses) {
             String surfaceForm = fsmPars.getFsmParse(0).getSurfaceForm();
-            if (word.equals("ne")) {
-                if (surfaceForm.equals("ne")) {
-                    count++;
-                }
-            } else if (word.equals("ya")) {
-                if (surfaceForm.equals("ya")) {
-                    count++;
-                }
+            if (surfaceForm.equals(word)) {
+                count++;
             }
         }
         return count == 2;
@@ -398,7 +392,7 @@ public abstract class AutoDisambiguator {
                 if (containsTwoNeOrYa(fsmParses, "ya")) {
                     return "CONJ";
                 }
-                if (nextWordExists(index, fsmParses) && fsmParses[index].getFsmParse(index + 1).getSurfaceForm().equalsIgnoreCase("da")) {
+                if (nextWordExists(index, fsmParses) && fsmParses[index + 1].getFsmParse(0).getSurfaceForm().equalsIgnoreCase("da")) {
                     return "CONJ";
                 }
                 return "INTERJ";

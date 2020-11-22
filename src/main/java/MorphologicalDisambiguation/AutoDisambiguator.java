@@ -45,6 +45,10 @@ public abstract class AutoDisambiguator {
         return index + 2 == fsmParses.length;
     }
 
+    private static boolean nextWordExists(int index, FsmParseList[] fsmParses) {
+        return index + 1 < fsmParses.length;
+    }
+
     private static boolean isNextWordNoun(int index, FsmParseList[] fsmParses){
         return index + 1 < fsmParses.length && nextWordPos(fsmParses[index + 1]).equals("NOUN");
     }
@@ -61,12 +65,18 @@ public abstract class AutoDisambiguator {
         return Word.isCapital(surfaceForm);
     }
 
-    private static boolean containsTwoNe(FsmParseList[] fsmParses) {
+    private static boolean containsTwoNeOrYa(FsmParseList[] fsmParses, String word) {
         int count = 0;
         for (FsmParseList fsmPars : fsmParses) {
             String surfaceForm = fsmPars.getFsmParse(0).getSurfaceForm();
-            if (surfaceForm.equals("ne")) {
-                count++;
+            if (word.equals("ne")) {
+                if (surfaceForm.equals("ne")) {
+                    count++;
+                }
+            } else if (word.equals("ya")) {
+                if (surfaceForm.equals("ya")) {
+                    count++;
+                }
             }
         }
         return count == 2;
@@ -74,6 +84,10 @@ public abstract class AutoDisambiguator {
 
     private static boolean isPreviousWordAblative(int index, ArrayList<FsmParse> correctParses) {
         return index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE);
+    }
+
+    private static boolean isPreviousWordDative(int index, ArrayList<FsmParse> correctParses) {
+        return index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.DATIVE);
     }
 
     private static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
@@ -301,7 +315,7 @@ public abstract class AutoDisambiguator {
                 if (lastWord.equals("?")) {
                     return "PRON+QUESP+A3SG+PNON+NOM";
                 }
-                if (containsTwoNe(fsmParses)) {
+                if (containsTwoNeOrYa(fsmParses, "ne")) {
                     return "CONJ";
                 }
                 if (isNextWordNoun(index, fsmParses)) {
@@ -328,6 +342,89 @@ public abstract class AutoDisambiguator {
                 return "NEG+PAST+A1PL";
             case "DATE$NUM+FRACTION":
                 return "NUM+FRACTION";
+                /* giriş, satış, öpüş, vuruş */
+            case "POS^DB+NOUN+INF3+A3SG+PNON+NOM$RECIP+POS+IMP+A2SG":
+                return "POS^DB+NOUN+INF3+A3SG+PNON+NOM";
+                /* başka, yukarı */
+            case "ADJ$POSTP+PCABL":
+                if (isPreviousWordAblative(index, correctParses)) {
+                    return "POSTP+PCABL";
+                }
+                return "ADJ";
+                /* KARŞI */
+            case "ADJ$ADV$NOUN+A3SG+PNON+NOM$POSTP+PCDAT":
+                if (isPreviousWordDative(index, correctParses)) {
+                    return "POSTP+PCDAT";
+                }
+                if (isNextWordNoun(index, fsmParses)) {
+                    return "ADJ";
+                }
+                return "ADV";
+                /* BEN */
+            case "NOUN+A3SG$NOUN+PROP+A3SG$PRON+PERS+A1SG":
+                return "PRON+PERS+A1SG";
+                /* yapıcı, verici */
+            case "ADJ+AGT$NOUN+AGT+A3SG+PNON+NOM":
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "ADJ+AGT";
+                }
+                return "NOUN+AGT+A3SG+PNON+NOM";
+                /* BİLE */
+            case "ADV$VERB+POS+IMP+A2SG":
+                return "ADV";
+                /* ortalamalar, uzaylılar, demokratlar */
+            case "NOUN+ZERO+A3PL+PNON+NOM$VERB+ZERO+PRES+A3PL":
+                return "NOUN+ZERO+A3PL+PNON+NOM";
+                /* yasa, diye, yıla */
+            case "NOUN+A3SG+PNON+DAT$VERB+POS+OPT+A3SG":
+                return "NOUN+A3SG+PNON+DAT";
+                /* BİZ, BİZE */
+            case "NOUN+A3SG$PRON+PERS+A1PL":
+                return "PRON+PERS+A1PL";
+                /* AZDI */
+            case "ADJ^DB+VERB+ZERO$POSTP+PCABL^DB+VERB+ZERO$VERB+POS":
+                return "ADJ^DB+VERB+ZERO";
+                /* BİRİNCİ, İKİNCİ, ÜÇÜNCÜ, DÖRDÜNCÜ, BEŞİNCİ */
+            case "ADJ$NUM+ORD":
+                return "ADJ";
+                /* AY */
+            case "INTERJ$NOUN+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                return "NOUN+A3SG+PNON+NOM";
+                /* konuşmam, savunmam, etmem */
+            case "NEG+AOR+A1SG$POS^DB+NOUN+INF2+A3SG+P1SG+NOM":
+                return "NEG+AOR+A1SG";
+                /* YA */
+            case "CONJ$INTERJ":
+                if (containsTwoNeOrYa(fsmParses, "ya")) {
+                    return "CONJ";
+                }
+                if (nextWordExists(index, fsmParses) && fsmParses[index].getFsmParse(index + 1).getSurfaceForm().equalsIgnoreCase("da")) {
+                    return "CONJ";
+                }
+                return "INTERJ";
+            case "A3PL+P3PL$A3PL+P3SG$A3SG+P3PL":
+                if (isPossessivePlural(index, correctParses)) {
+                    return "A3SG+P3PL";
+                }
+                return "A3PL+P3SG";
+                /* yüzde, yüzlü */
+            case "NOUN$NUM+CARD^DB+NOUN+ZERO":
+                return "NOUN";
+                /* almanlar, uzmanlar, elmaslar, katiller */
+            case "ADJ^DB+VERB+ZERO+PRES+A3PL$NOUN+A3PL+PNON+NOM$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A3PL":
+                return "NOUN+A3PL+PNON+NOM";
+                /* fazlası, yetkilisi */
+            case "ADJ+JUSTLIKE$NOUN+ZERO+A3SG+P3SG+NOM":
+                return "NOUN+ZERO+A3SG+P3SG+NOM";
+                /* HERKES, HERKESTEN, HERKESLE, HERKES */
+            case "NOUN+A3SG+PNON$PRON+QUANTP+A3PL+P3PL":
+                return "PRON+QUANTP+A3PL+P3PL";
+                /* BEN, BENDEN, BENCE, BANA, BENDE */
+            case "NOUN+A3SG$PRON+PERS+A1SG":
+                return "PRON+PERS+A1SG";
+                /* karşısından, geriye, geride */
+            case "ADJ^DB+NOUN+ZERO$NOUN":
+                return "ADJ^DB+NOUN+ZERO";
             default:
                 break;
         }

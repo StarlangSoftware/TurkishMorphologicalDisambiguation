@@ -17,7 +17,6 @@ public class RootWordStatisticsDisambiguationTest {
         FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
         DisambiguationCorpus corpus = new DisambiguationCorpus("penntreebank.txt");
         RootWordStatisticsDisambiguation algorithm = new RootWordStatisticsDisambiguation();
-        algorithm.train(corpus);
         int correctParse = 0;
         int correctRoot = 0;
         for (int i = 0; i < corpus.sentenceCount(); i++){

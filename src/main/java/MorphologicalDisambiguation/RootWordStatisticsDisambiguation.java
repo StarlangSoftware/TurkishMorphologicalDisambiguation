@@ -8,9 +8,16 @@ import java.util.ArrayList;
 public class RootWordStatisticsDisambiguation implements MorphologicalDisambiguator{
     private RootWordStatistics rootWordStatistics;
 
+    public RootWordStatisticsDisambiguation(){
+        rootWordStatistics = new RootWordStatistics("penntreebank_statistics.txt");
+    }
+
+    public RootWordStatisticsDisambiguation(String fileName){
+        rootWordStatistics = new RootWordStatistics(fileName);
+    }
+
     @Override
     public void train(DisambiguationCorpus corpus) {
-        rootWordStatistics = new RootWordStatistics("penntreebank_statistics.txt");
     }
 
     @Override

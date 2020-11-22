@@ -419,6 +419,68 @@ public abstract class AutoDisambiguator {
                 /* karşısından, geriye, geride */
             case "ADJ^DB+NOUN+ZERO$NOUN":
                 return "ADJ^DB+NOUN+ZERO";
+                /* gideceği, kalacağı */
+            case "ADJ+FUTPART+P3SG$NOUN+FUTPART+A3SG+P3SG+NOM":
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "ADJ+FUTPART+P3SG";
+                }
+                return "NOUN+FUTPART+A3SG+P3SG+NOM";
+                /* bildiğimiz, geçtiğimiz, yaşadığımız */
+            case "ADJ+PASTPART+P1PL$NOUN+PASTPART+A3SG+P1PL+NOM":
+                return "ADJ+PASTPART+P1PL";
+                /* eminim, memnunum, açım */
+            case "NOUN+ZERO+A3SG+P1SG+NOM$VERB+ZERO+PRES+A1SG":
+                return "VERB+ZERO+PRES+A1SG";
+                /* yaparlar, olabilirler, değiştirirler */
+            case "AOR+A3PL$AOR^DB+ADJ+ZERO^DB+NOUN+ZERO+A3PL+PNON+NOM":
+                return "AOR+A3PL";
+                /* san, yasa */
+            case "NOUN+A3SG+PNON+NOM$NOUN+PROP+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                if (index > 0) {
+                    if (isCapital(surfaceForm)) {
+                        return "NOUN+PROP+A3SG+PNON+NOM";
+                    }
+                    return "NOUN+A3SG+PNON+NOM";
+                }
+                /* etmeyecek, yapmayacak, koşmayacak */
+            case "NEG+FUT+A3SG$NEG^DB+ADJ+FUTPART+PNON":
+                return "NEG+FUT+A3SG";
+                /* etmeli, olmalı */
+            case "POS+NECES+A3SG$POS^DB+NOUN+INF2+A3SG+PNON+NOM^DB+ADJ+WITH":
+                if (isBeforeLastWord(index, fsmParses)) {
+                    return "POS+NECES+A3SG";
+                }
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "POS^DB+NOUN+INF2+A3SG+PNON+NOM^DB+ADJ+WITH";
+                }
+                return "POS+NECES+A3SG";
+                /* DE */
+            case "CONJ$NOUN+PROP+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                if (index > 0) {
+                    if (isCapital(surfaceForm)) {
+                        return "NOUN+PROP+A3SG+PNON+NOM";
+                    }
+                    return "CONJ";
+                }
+                /* geç, sık */
+            case "ADJ$ADV$VERB+POS+IMP+A2SG":
+                if (surfaceForm.equals("sık")) {
+                    String previousWord = "";
+                    String nextWord = "";
+                    if (index - 1 > -1) {
+                        previousWord = fsmParses[index - 1].getFsmParse(0).getSurfaceForm();
+                    }
+                    if (index + 1 < fsmParses.length) {
+                        nextWord = fsmParses[index + 1].getFsmParse(0).getSurfaceForm();
+                    }
+                    if (previousWord.equals("sık") || nextWord.equals("sık")) {
+                        return "ADV";
+                    }
+                }
+                if (isNextWordNoun(index, fsmParses)) {
+                    return "ADJ";
+                }
+                return "ADV";
             default:
                 break;
         }

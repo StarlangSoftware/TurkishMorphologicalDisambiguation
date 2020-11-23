@@ -35,8 +35,8 @@ public class RootFirstDisambiguationTest {
                 }
             }
         }
-        assertEquals(0.9549, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
-        assertEquals(0.8630, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
+        assertEquals(0.9570, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
+        assertEquals(0.8677, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
     }
 
 }

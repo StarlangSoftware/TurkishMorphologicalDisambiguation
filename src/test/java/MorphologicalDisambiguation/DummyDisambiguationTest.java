@@ -35,7 +35,7 @@ public class DummyDisambiguationTest {
             }
         }
         assertEquals(0.8618, (correctRoot + 0.0) / corpus.numberOfWords(), 0.002);
-        assertEquals(0.7021, (correctParse + 0.0) / corpus.numberOfWords(), 0.002);
+        assertEquals(0.7046, (correctParse + 0.0) / corpus.numberOfWords(), 0.002);
     }
 
 }

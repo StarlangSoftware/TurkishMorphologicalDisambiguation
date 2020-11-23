@@ -61,10 +61,6 @@ public abstract class AutoDisambiguator {
         return index == 0;
     }
 
-    private static boolean isCapital(String surfaceForm){
-        return Word.isCapital(surfaceForm);
-    }
-
     private static boolean containsTwoNeOrYa(FsmParseList[] fsmParses, String word) {
         int count = 0;
         for (FsmParseList fsmPars : fsmParses) {
@@ -108,10 +104,7 @@ public abstract class AutoDisambiguator {
                 /* Ocak, Cuma, ABD */
             case "A3SG$PROP+A3SG":
                 if (index > 0) {
-                    if (isCapital(surfaceForm)) {
-                        return "PROP+A3SG";
-                    }
-                    return "A3SG";
+                    return "PROP+A3SG";
                 }
                 /* şirketin, seçimlerin, borsacıların, kitapların */
             case "P2SG+NOM$PNON+GEN":
@@ -155,10 +148,7 @@ public abstract class AutoDisambiguator {
                 }
             case "ADJ$NOUN+PROP+A3SG+PNON+NOM":
                 if (index > 0) {
-                    if (isCapital(surfaceForm)) {
-                        return "NOUN+PROP+A3SG+PNON+NOM";
-                    }
-                    return "ADJ";
+                    return "NOUN+PROP+A3SG+PNON+NOM";
                 }
                 /* BU, ŞU */
             case "DET$PRON+DEMONSP+A3SG+PNON+NOM":
@@ -244,9 +234,7 @@ public abstract class AutoDisambiguator {
                 return "NARR^DB+ADJ+ZERO";
             case "ADJ$NOUN+A3SG+PNON+NOM$NOUN+PROP+A3SG+PNON+NOM":
                 if (index > 0) {
-                    if (isCapital(surfaceForm)) {
-                        return "NOUN+PROP+A3SG+PNON+NOM";
-                    }
+                    return "NOUN+PROP+A3SG+PNON+NOM";
                 } else {
                     if (isNextWordNounOrAdjective(index, fsmParses)) {
                         return "ADJ";
@@ -279,7 +267,7 @@ public abstract class AutoDisambiguator {
                 /* hazineler, kıymetler */
             case "A3PL+PNON+NOM$A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A3PL$PROP+A3PL+PNON+NOM":
                 if (index > 0) {
-                    if (isCapital(surfaceForm)) {
+                    if (fsmParses[index].getFsmParse(0).isCapitalWord()) {
                         return "PROP+A3PL+PNON+NOM";
                     }
                     return "A3PL+PNON+NOM";
@@ -433,10 +421,7 @@ public abstract class AutoDisambiguator {
                 /* san, yasa */
             case "NOUN+A3SG+PNON+NOM$NOUN+PROP+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
                 if (index > 0) {
-                    if (isCapital(surfaceForm)) {
-                        return "NOUN+PROP+A3SG+PNON+NOM";
-                    }
-                    return "NOUN+A3SG+PNON+NOM";
+                    return "NOUN+PROP+A3SG+PNON+NOM";
                 }
                 /* etmeyecek, yapmayacak, koşmayacak */
             case "NEG+FUT+A3SG$NEG^DB+ADJ+FUTPART+PNON":
@@ -453,10 +438,7 @@ public abstract class AutoDisambiguator {
                 /* DE */
             case "CONJ$NOUN+PROP+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
                 if (index > 0) {
-                    if (isCapital(surfaceForm)) {
-                        return "NOUN+PROP+A3SG+PNON+NOM";
-                    }
-                    return "CONJ";
+                    return "NOUN+PROP+A3SG+PNON+NOM";
                 }
                 /* GEÇ, SIK */
             case "ADJ$ADV$VERB+POS+IMP+A2SG":

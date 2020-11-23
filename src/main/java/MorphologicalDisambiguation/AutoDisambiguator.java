@@ -76,8 +76,8 @@ public abstract class AutoDisambiguator {
         return count == 2;
     }
 
-    private static boolean isPreviousWordAblative(int index, ArrayList<FsmParse> correctParses) {
-        return index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.ABLATIVE);
+    private static boolean hasPreviousWordTag(int index, ArrayList<FsmParse> correctParses, MorphologicalTag tag) {
+        return index > 0 && correctParses.get(index - 1).containsTag(tag);
     }
 
     private static boolean isPreviousWordDative(int index, ArrayList<FsmParse> correctParses) {
@@ -127,7 +127,7 @@ public abstract class AutoDisambiguator {
             case "ADJ$ADV$DET$POSTP+PCABL":
                 /* FAZLA */
             case "ADJ$ADV$POSTP+PCABL":
-                if (isPreviousWordAblative(index, correctParses)) {
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.ABLATIVE)) {
                     return "POSTP+PCABL";
                 }
                 if (index + 1 < fsmParses.length) {
@@ -237,7 +237,7 @@ public abstract class AutoDisambiguator {
                 return "NOUN+PASTPART+A3SG+P3SG+NOM";
                 /* ÖNCE, SONRA */
             case "ADV$NOUN+A3SG+PNON+NOM$POSTP+PCABL":
-                if (isPreviousWordAblative(index, correctParses)) {
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.ABLATIVE)) {
                     return "POSTP+PCABL";
                 }
                 return "ADV";
@@ -321,7 +321,7 @@ public abstract class AutoDisambiguator {
                 return "DET";
                 /* AZ */
             case "ADJ$ADV$POSTP+PCABL$VERB+POS+IMP+A2SG":
-                if (isPreviousWordAblative(index, correctParses)) {
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.ABLATIVE)) {
                     return "POSTP+PCABL";
                 }
                 if (isNextWordNounOrAdjective(index, fsmParses)) {
@@ -341,7 +341,7 @@ public abstract class AutoDisambiguator {
                 return "POS^DB+NOUN+INF3+A3SG+PNON+NOM";
                 /* başka, yukarı */
             case "ADJ$POSTP+PCABL":
-                if (isPreviousWordAblative(index, correctParses)) {
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.ABLATIVE)) {
                     return "POSTP+PCABL";
                 }
                 return "ADJ";
@@ -481,6 +481,51 @@ public abstract class AutoDisambiguator {
                     return "ADJ";
                 }
                 return "ADV";
+            /* BİRLİKTE */
+            case "ADV$POSTP+PCINS":
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.INSTRUMENTAL)) {
+                    return "POSTP+PCINS";
+                }
+                return "ADV";
+                /* yavaşça, dürüstçe, fazlaca */
+            case "ADJ+ASIF$ADV+LY$NOUN+ZERO+A3SG+PNON+EQU":
+                return "ADV+LY";
+                /* FAZLADIR, FAZLAYDI, ÇOKTU, ÇOKTUR */
+            case "ADJ^DB$POSTP+PCABL^DB":
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.ABLATIVE)) {
+                    return "POSTP+PCABL^DB";
+                }
+                return "ADJ^DB";
+                /* kaybettikleri, umdukları, gösterdikleri */
+            case "ADJ+PASTPART+P3PL$NOUN+PASTPART+A3PL+P3PL+NOM$NOUN+PASTPART+A3PL+P3SG+NOM$NOUN+PASTPART+A3SG+P3PL+NOM":
+                if (isNextWordNounOrAdjective(index, fsmParses)) {
+                    return "ADJ+PASTPART+P3PL";
+                }
+                if (isPossessivePlural(index, correctParses)) {
+                    return "NOUN+PASTPART+A3SG+P3PL+NOM";
+                }
+                return "NOUN+PASTPART+A3PL+P3SG+NOM";
+                /* yılın, yolun */
+            case "NOUN+A3SG+P2SG+NOM$NOUN+A3SG+PNON+GEN$VERB+POS+IMP+A2PL$VERB^DB+VERB+PASS+POS+IMP+A2SG":
+                if (isAnyWordSecondPerson(index, correctParses)) {
+                    return "NOUN+A3SG+P2SG+NOM";
+                }
+                return "NOUN+A3SG+PNON+GEN";
+                /* sürmekte, beklenmekte, değişmekte */
+            case "POS+PROG2+A3SG$POS^DB+NOUN+INF+A3SG+PNON+LOC":
+                return "POS+PROG2+A3SG";
+                /* kimse, kimsede, kimseye */
+            case "NOUN+A3SG+PNON$PRON+QUANTP+A3SG+P3SG":
+                return "PRON+QUANTP+A3SG+P3SG";
+                /* DOĞRU */
+            case "ADJ$NOUN+A3SG+PNON+NOM$POSTP+PCDAT":
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.DATIVE)) {
+                    return "POSTP+PCDAT";
+                }
+                return "ADJ";
+                /* ikisini, ikisine, fazlasına */
+            case "ADJ+JUSTLIKE^DB+NOUN+ZERO+A3SG+P2SG$NOUN+ZERO+A3SG+P3SG":
+                return "NOUN+ZERO+A3SG+P3SG";
             default:
                 break;
         }

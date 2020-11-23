@@ -80,10 +80,6 @@ public abstract class AutoDisambiguator {
         return index > 0 && correctParses.get(index - 1).containsTag(tag);
     }
 
-    private static boolean isPreviousWordDative(int index, ArrayList<FsmParse> correctParses) {
-        return index > 0 && correctParses.get(index - 1).containsTag(MorphologicalTag.DATIVE);
-    }
-
     private static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         String surfaceForm = fsmParses[index].getFsmParse(0).getSurfaceForm();
         String root = fsmParses[index].getFsmParse(0).getWord().getName();
@@ -347,7 +343,7 @@ public abstract class AutoDisambiguator {
                 return "ADJ";
                 /* KARŞI */
             case "ADJ$ADV$NOUN+A3SG+PNON+NOM$POSTP+PCDAT":
-                if (isPreviousWordDative(index, correctParses)) {
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.DATIVE)) {
                     return "POSTP+PCDAT";
                 }
                 if (isNextWordNoun(index, fsmParses)) {
@@ -401,7 +397,7 @@ public abstract class AutoDisambiguator {
                     return "A3SG+P3PL";
                 }
                 return "A3PL+P3SG";
-                /* yüzde, yüzlü */
+                /* YÜZDE, YÜZLÜ */
             case "NOUN$NUM+CARD^DB+NOUN+ZERO":
                 return "NOUN";
                 /* almanlar, uzmanlar, elmaslar, katiller */
@@ -462,7 +458,7 @@ public abstract class AutoDisambiguator {
                     }
                     return "CONJ";
                 }
-                /* geç, sık */
+                /* GEÇ, SIK */
             case "ADJ$ADV$VERB+POS+IMP+A2SG":
                 if (surfaceForm.equals("sık")) {
                     String previousWord = "";
@@ -514,7 +510,7 @@ public abstract class AutoDisambiguator {
                 /* sürmekte, beklenmekte, değişmekte */
             case "POS+PROG2+A3SG$POS^DB+NOUN+INF+A3SG+PNON+LOC":
                 return "POS+PROG2+A3SG";
-                /* kimse, kimsede, kimseye */
+                /* KİMSE, KİMSEDE, KİMSEYE */
             case "NOUN+A3SG+PNON$PRON+QUANTP+A3SG+P3SG":
                 return "PRON+QUANTP+A3SG+P3SG";
                 /* DOĞRU */

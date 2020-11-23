@@ -30,7 +30,7 @@ public class RootWordStatisticsDisambiguationTest {
                 } else {
                     if (fsmParses.get(j).getWord().equals(word.getParse().getWord())){
                         correctRoot++;
-                        //System.out.println(fsmParses.get(j).transitionList() + "\t" + word.getParse().toString());
+                        System.out.println(fsmParses.get(j).transitionList() + "\t" + word.getParse().toString());
                     }
                 }
             }

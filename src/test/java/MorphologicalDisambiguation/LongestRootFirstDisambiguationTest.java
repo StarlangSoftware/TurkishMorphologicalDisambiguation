@@ -36,7 +36,7 @@ public class LongestRootFirstDisambiguationTest {
             }
         }
         assertEquals(0.8942, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
-        assertEquals(0.8182, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
+        assertEquals(0.8184, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
     }
 
 

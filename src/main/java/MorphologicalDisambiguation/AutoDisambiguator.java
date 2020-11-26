@@ -504,6 +504,32 @@ public abstract class AutoDisambiguator {
                 /* ikisini, ikisine, fazlasına */
             case "ADJ+JUSTLIKE^DB+NOUN+ZERO+A3SG+P2SG$NOUN+ZERO+A3SG+P3SG":
                 return "NOUN+ZERO+A3SG+P3SG";
+                /* kişilerdir, aylardır, yıllardır */
+            case "A3PL+PNON+NOM^DB+ADV+SINCE$A3PL+PNON+NOM^DB+VERB+ZERO+PRES+COP+A3SG$A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A3PL+COP":
+                if (root.equalsIgnoreCase("yıl") || root.equalsIgnoreCase("süre") || root.equalsIgnoreCase("zaman") || root.equalsIgnoreCase("ay")) {
+                    return "A3PL+PNON+NOM^DB+ADV+SINCE";
+                } else {
+                    return "A3PL+PNON+NOM^DB+VERB+ZERO+PRES+COP+A3SG";
+                }
+                /* HEP */
+            case "ADV$PRON+QUANTP+A3SG+P3SG+NOM":
+                return "ADV";
+                /* O */
+            case "DET$NOUN+PROP+A3SG+PNON+NOM$PRON+DEMONSP+A3SG+PNON+NOM$PRON+PERS+A3SG+PNON+NOM":
+                if (isNextWordNoun(index, fsmParses)){
+                    return "DET";
+                } else {
+                    return "PRON+PERS+A3SG+PNON+NOM";
+                }
+                /* yapmalıyız, etmeliyiz, alınmalıdır */
+            case "POS+NECES$POS^DB+NOUN+INF2+A3SG+PNON+NOM^DB+ADJ+WITH^DB+VERB+ZERO+PRES":
+                return "POS+NECES";
+                /* kızdı, çekti, bozdu */
+            case "ADJ^DB+VERB+ZERO$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO$VERB+POS":
+                return "VERB+POS";
+                /* BİZİMLE */
+            case "NOUN+A3SG+P1SG$PRON+PERS+A1PL+PNON":
+                return "PRON+PERS+A1PL+PNON";
             default:
                 break;
         }

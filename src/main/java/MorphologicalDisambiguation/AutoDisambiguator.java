@@ -530,6 +530,38 @@ public abstract class AutoDisambiguator {
                 /* BİZİMLE */
             case "NOUN+A3SG+P1SG$PRON+PERS+A1PL+PNON":
                 return "PRON+PERS+A1PL+PNON";
+                /* VARDIR */
+            case "ADJ^DB+VERB+ZERO+PRES+COP+A3SG$VERB^DB+VERB+CAUS+POS+IMP+A2SG":
+                return "ADJ^DB+VERB+ZERO+PRES+COP+A3SG";
+                /* Mİ */
+            case "NOUN+A3SG+PNON+NOM$QUES+PRES+A3SG":
+                return "QUES+PRES+A3SG";
+                /* BENİM */
+            case "NOUN+A3SG+P1SG+NOM$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A1SG$PRON+PERS+A1SG+PNON+GEN$PRON+PERS+A1SG+PNON+NOM^DB+VERB+ZERO+PRES+A1SG":
+                return "PRON+PERS+A1SG+PNON+GEN";
+                /* SUN */
+            case "NOUN+PROP+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                return "NOUN+PROP+A3SG+PNON+NOM";
+            case "ADJ+JUSTLIKE$NOUN+ZERO+A3SG+P3SG+NOM$NOUN+ZERO^DB+ADJ+ALMOST":
+                return "NOUN+ZERO+A3SG+P3SG+NOM";
+                /* düşündük, ettik, kazandık */
+            case "NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PAST+A1PL$VERB+POS+PAST+A1PL$VERB+POS^DB+ADJ+PASTPART+PNON$VERB+POS^DB+NOUN+PASTPART+A3SG+PNON+NOM":
+                return "VERB+POS+PAST+A1PL";
+                /* komiktir, eksiktir, mevcuttur, yoktur */
+            case "ADJ^DB+VERB+ZERO+PRES+COP+A3SG$NOUN+A3SG+PNON+NOM^DB+ADV+SINCE$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+COP+A3SG":
+                return "ADJ^DB+VERB+ZERO+PRES+COP+A3SG";
+                /* edeceğim, ekeceğim, koşacağım, gideceğim, savaşacağım, olacağım  */
+            case "POS+FUT+A1SG$POS^DB+ADJ+FUTPART+P1SG$POS^DB+NOUN+FUTPART+A3SG+P1SG+NOM":
+                return "POS+FUT+A1SG";
+                /* A */
+            case "ADJ$INTERJ$NOUN+PROP+A3SG+PNON+NOM":
+                return "NOUN+PROP+A3SG+PNON+NOM";
+                /* BİZİ */
+            case "NOUN+A3SG+P3SG+NOM$NOUN+A3SG+PNON+ACC$PRON+PERS+A1PL+PNON+ACC":
+                return "PRON+PERS+A1PL+PNON+ACC";
+                /* BİZİM */
+            case "NOUN+A3SG+P1SG+NOM$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A1SG$PRON+PERS+A1PL+PNON+GEN$PRON+PERS+A1PL+PNON+NOM^DB+VERB+ZERO+PRES+A1SG":
+                return "PRON+PERS+A1PL+PNON+GEN";
             default:
                 break;
         }

@@ -53,8 +53,12 @@ public abstract class AutoDisambiguator {
         return index + 1 < fsmParses.length && nextWordPos(fsmParses[index + 1]).equals("NOUN");
     }
 
+    private static boolean isNextWordNum(int index, FsmParseList[] fsmParses){
+        return index + 1 < fsmParses.length && nextWordPos(fsmParses[index + 1]).equals("NUM");
+    }
+
     private static boolean isNextWordNounOrAdjective(int index, FsmParseList[] fsmParses) {
-        return index + 1 < fsmParses.length && (nextWordPos(fsmParses[index + 1]).equals("NOUN") || nextWordPos(fsmParses[index + 1]).equals("ADJ"));
+        return index + 1 < fsmParses.length && (nextWordPos(fsmParses[index + 1]).equals("NOUN") || nextWordPos(fsmParses[index + 1]).equals("ADJ") || nextWordPos(fsmParses[index + 1]).equals("DET"));
     }
 
     private static boolean isFirstWord(int index){
@@ -65,7 +69,7 @@ public abstract class AutoDisambiguator {
         int count = 0;
         for (FsmParseList fsmPars : fsmParses) {
             String surfaceForm = fsmPars.getFsmParse(0).getSurfaceForm();
-            if (surfaceForm.equals(word)) {
+            if (surfaceForm.equalsIgnoreCase(word)) {
                 count++;
             }
         }
@@ -562,6 +566,285 @@ public abstract class AutoDisambiguator {
                 /* BİZİM */
             case "NOUN+A3SG+P1SG+NOM$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A1SG$PRON+PERS+A1PL+PNON+GEN$PRON+PERS+A1PL+PNON+NOM^DB+VERB+ZERO+PRES+A1SG":
                 return "PRON+PERS+A1PL+PNON+GEN";
+                /* erkekler, kadınlar, madenler, uzmanlar*/
+            case "ADJ^DB+VERB+ZERO+PRES+A3PL$NOUN+A3PL+PNON+NOM$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A3PL$NOUN+PROP+A3PL+PNON+NOM":
+                return "NOUN+A3PL+PNON+NOM";
+                /* TABİ */
+            case "ADJ$INTERJ":
+                return "ADJ";
+            case "AOR+A2PL$AOR^DB+ADJ+ZERO^DB+ADJ+JUSTLIKE^DB+NOUN+ZERO+A3SG+P2PL+NOM":
+                return "AOR+A2PL";
+                /* ayın, düşünün*/
+            case "NOUN+A3SG+P2SG+NOM$NOUN+A3SG+PNON+GEN$VERB+POS+IMP+A2PL":
+                if (isBeforeLastWord(index, fsmParses)){
+                    return "VERB+POS+IMP+A2PL";
+                }
+                return "NOUN+A3SG+PNON+GEN";
+                /* ödeyecekler, olacaklar */
+            case "POS+FUT+A3PL$POS^DB+NOUN+FUTPART+A3PL+PNON+NOM":
+                return "POS+FUT+A3PL";
+                /* 9:30'daki */
+            case "P3SG$PNON":
+                return "PNON";
+                /* olabilecek, yapabilecek */
+            case "ABLE+FUT+A3SG$ABLE^DB+ADJ+FUTPART+PNON":
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "ABLE^DB+ADJ+FUTPART+PNON";
+                }
+                return "ABLE+FUT+A3SG";
+                /* düşmüş duymuş artmış */
+            case "NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+NARR+A3SG$VERB+POS+NARR+A3SG$VERB+POS+NARR^DB+ADJ+ZERO":
+                if (isBeforeLastWord(index, fsmParses)){
+                    return "VERB+POS+NARR+A3SG";
+                }
+                return "VERB+POS+NARR^DB+ADJ+ZERO";
+                /* BERİ, DIŞARI, AŞAĞI */
+            case "ADJ$ADV$NOUN+A3SG+PNON+NOM$POSTP+PCABL":
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.ABLATIVE)) {
+                    return "POSTP+PCABL";
+                }
+                return "ADV";
+                /* TV, CD */
+            case "A3SG+PNON+ACC$PROP+A3SG+PNON+NOM":
+                return "A3SG+PNON+ACC";
+                /* değinmeyeceğim, vermeyeceğim */
+            case "NEG+FUT+A1SG$NEG^DB+ADJ+FUTPART+P1SG$NEG^DB+NOUN+FUTPART+A3SG+P1SG+NOM":
+                return "NEG+FUT+A1SG";
+                /* görünüşe, satışa, duruşa */
+            case "POS^DB+NOUN+INF3+A3SG+PNON+DAT$RECIP+POS+OPT+A3SG":
+                return "POS^DB+NOUN+INF3+A3SG+PNON+DAT";
+                /* YILDIR, AYDIR, YOLDUR */
+            case "NOUN+A3SG+PNON+NOM^DB+ADV+SINCE$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+COP+A3SG$VERB^DB+VERB+CAUS+POS+IMP+A2SG":
+                if (root.equalsIgnoreCase("yıl") || root.equalsIgnoreCase("ay")) {
+                    return "NOUN+A3SG+PNON+NOM^DB+ADV+SINCE";
+                } else {
+                    return "NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+COP+A3SG";
+                }
+                /* BENİ */
+            case "NOUN+A3SG+P3SG+NOM$NOUN+A3SG+PNON+ACC$PRON+PERS+A1SG+PNON+ACC":
+                return "PRON+PERS+A1SG+PNON+ACC";
+                /* edemezsin, kanıtlarsın, yapamazsın */
+            case "AOR+A2SG$AOR^DB+ADJ+ZERO^DB+ADJ+JUSTLIKE^DB+NOUN+ZERO+A3SG+P2SG+NOM":
+                return "AOR+A2SG";
+                /* BÜYÜME, ATAMA, KARIMA, KORUMA, TANIMA, ÜREME */
+            case "NOUN+A3SG+P1SG+DAT$VERB+NEG+IMP+A2SG$VERB+POS^DB+NOUN+INF2+A3SG+PNON+NOM":
+                if (root.equalsIgnoreCase("karı")){
+                    return "NOUN+A3SG+P1SG+DAT";
+                }
+                return "VERB+POS^DB+NOUN+INF2+A3SG+PNON+NOM";
+                /* HANGİ */
+            case "ADJ$PRON+QUESP+A3SG+PNON+NOM":
+                if (lastWord.equals("?")) {
+                    return "PRON+QUESP+A3SG+PNON+NOM";
+                }
+                return "ADJ";
+                /* GÜCÜNÜ, GÜCÜNÜN, ESASINDA */
+            case "ADJ^DB+NOUN+ZERO+A3SG+P2SG$ADJ^DB+NOUN+ZERO+A3SG+P3SG$NOUN+A3SG+P2SG$NOUN+A3SG+P3SG":
+                return "NOUN+A3SG+P3SG";
+                /* YILININ, YOLUNUN, DİLİNİN */
+            case "NOUN+A3SG+P2SG+GEN$NOUN+A3SG+P3SG+GEN$VERB^DB+VERB+PASS+POS+IMP+A2PL":
+                return "NOUN+A3SG+P3SG+GEN";
+                /* ÇIKARDI */
+            case "VERB+POS+AOR$VERB^DB+VERB+CAUS+POS":
+                return "VERB+POS+AOR";
+                /* sunucularımız, rakiplerimiz, yayınlarımız */
+            case "P1PL+NOM$P1SG+NOM^DB+VERB+ZERO+PRES+A1PL":
+                return "P1PL+NOM";
+                /* etmiştir, artmıştır, düşünmüştür, alınmıştır */
+            case "NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+NARR+A3SG+COP$VERB+POS+NARR+COP+A3SG":
+                return "VERB+POS+NARR+COP+A3SG";
+                /* hazırlandı, yuvarlandı, temizlendi */
+            case "VERB+REFLEX$VERB^DB+VERB+PASS":
+                return "VERB^DB+VERB+PASS";
+                /* KARA, ÇEK, SOL, KOCA */
+            case "ADJ$NOUN+A3SG+PNON+NOM$NOUN+PROP+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                if (index > 0) {
+                    if (fsmParses[index].getFsmParse(0).isCapitalWord()) {
+                        return "NOUN+PROP+A3SG+PNON+NOM";
+                    }
+                    return "ADJ";
+                }
+                /* YÜZ */
+            case "NOUN+A3SG+PNON+NOM$NUM+CARD$VERB+POS+IMP+A2SG":
+                if (isNextWordNum(index, fsmParses)){
+                    return "NUM+CARD";
+                }
+                return "NOUN+A3SG+PNON+NOM";
+            case "ADJ+AGT^DB+ADJ+JUSTLIKE$NOUN+AGT+A3SG+P3SG+NOM$NOUN+AGT^DB+ADJ+ALMOST":
+                return "NOUN+AGT+A3SG+P3SG+NOM";
+                /* artışın, düşüşün, yükselişin*/
+            case "POS^DB+NOUN+INF3+A3SG+P2SG+NOM$POS^DB+NOUN+INF3+A3SG+PNON+GEN$RECIP+POS+IMP+A2PL":
+                if (isAnyWordSecondPerson(index, correctParses)){
+                    return "POS^DB+NOUN+INF3+A3SG+P2SG+NOM";
+                }
+                return "POS^DB+NOUN+INF3+A3SG+PNON+GEN";
+                /* VARSA */
+            case "ADJ^DB+VERB+ZERO+COND$VERB+POS+DESR":
+                return "ADJ^DB+VERB+ZERO+COND";
+                /* DEK */
+            case "NOUN+A3SG+PNON+NOM$POSTP+PCDAT":
+                return "POSTP+PCDAT";
+                /* ALDIK */
+            case "ADJ^DB+VERB+ZERO+PAST+A1PL$VERB+POS+PAST+A1PL$VERB+POS^DB+ADJ+PASTPART+PNON$VERB+POS^DB+NOUN+PASTPART+A3SG+PNON+NOM":
+                return "VERB+POS+PAST+A1PL";
+                /* BİRİNİN, BİRİNE, BİRİNİ, BİRİNDEN */
+            case "ADJ^DB+NOUN+ZERO+A3SG+P2SG$ADJ^DB+NOUN+ZERO+A3SG+P3SG$NUM+CARD^DB+NOUN+ZERO+A3SG+P2SG$NUM+CARD^DB+NOUN+ZERO+A3SG+P3SG":
+                return "NUM+CARD^DB+NOUN+ZERO+A3SG+P3SG";
+                /* ARTIK */
+            case "ADJ$ADV$NOUN+A3SG+PNON+NOM$NOUN+PROP+A3SG+PNON+NOM":
+                return "ADV";
+                /* BİRİ */
+            case "ADJ^DB+NOUN+ZERO+A3SG+P3SG+NOM$ADJ^DB+NOUN+ZERO+A3SG+PNON+ACC$NUM+CARD^DB+NOUN+ZERO+A3SG+P3SG+NOM$NUM+CARD^DB+NOUN+ZERO+A3SG+PNON+ACC":
+                return "NUM+CARD^DB+NOUN+ZERO+A3SG+P3SG+NOM";
+                /* DOĞRU */
+            case "ADJ$NOUN+A3SG+PNON+NOM$NOUN+PROP+A3SG+PNON+NOM$POSTP+PCDAT":
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.DATIVE)) {
+                    return "POSTP+PCDAT";
+                }
+                return "ADJ";
+                /* demiryolları, havayolları, milletvekilleri */
+            case "P3PL+NOM$P3SG+NOM$PNON+ACC":
+                if (isPossessivePlural(index, correctParses)){
+                    return "P3PL+NOM";
+                }
+                return "P3SG+NOM";
+                /* GEREK */
+            case "CONJ$NOUN+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                if (containsTwoNeOrYa(fsmParses, "gerek")){
+                    return "CONJ";
+                }
+                return "NOUN+A3SG+PNON+NOM";
+                /* bilmediğiniz, sevdiğiniz, kazandığınız */
+            case "ADJ+PASTPART+P2PL$NOUN+PASTPART+A3SG+P2PL+NOM$NOUN+PASTPART+A3SG+PNON+GEN^DB+VERB+ZERO+PRES+A1PL":
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "ADJ+PASTPART+P2PL";
+                }
+                return "NOUN+PASTPART+A3SG+P2PL+NOM";
+                /* yapabilecekleri, edebilecekleri, sunabilecekleri */
+            case "ADJ+FUTPART+P3PL$NOUN+FUTPART+A3PL+P3PL+NOM$NOUN+FUTPART+A3PL+P3SG+NOM$NOUN+FUTPART+A3PL+PNON+ACC$NOUN+FUTPART+A3SG+P3PL+NOM":
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "ADJ+FUTPART+P3PL";
+                }
+                if (isPossessivePlural(index, correctParses)){
+                    return "NOUN+FUTPART+A3SG+P3PL+NOM";
+                }
+                return "NOUN+FUTPART+A3PL+P3SG+NOM";
+                /* KİM */
+            case "NOUN+PROP$PRON+QUESP":
+                if (lastWord.equals("?")) {
+                    return "PRON+QUESP";
+                }
+                return "NOUN+PROP";
+                /* ALINDI */
+            case "ADJ^DB+NOUN+ZERO+A3SG+P2SG+NOM^DB+VERB+ZERO$ADJ^DB+NOUN+ZERO+A3SG+PNON+GEN^DB+VERB+ZERO$VERB^DB+VERB+PASS+POS":
+                return "VERB^DB+VERB+PASS+POS";
+                /* KIZIM */
+            case "ADJ^DB+VERB+ZERO+PRES+A1SG$NOUN+A3SG+P1SG+NOM$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A1SG":
+                return "NOUN+A3SG+P1SG+NOM";
+                /* etmeliydi, yaratmalıydı */
+            case "POS+NECES$POS^DB+NOUN+INF2+A3SG+PNON+NOM^DB+ADJ+WITH^DB+VERB+ZERO":
+                return "POS+NECES";
+                /* HERKESİN */
+            case "NOUN+A3SG+P2SG+NOM$NOUN+A3SG+PNON+GEN$PRON+QUANTP+A3PL+P3PL+GEN":
+                return "PRON+QUANTP+A3PL+P3PL+GEN";
+            case "ADJ+JUSTLIKE^DB+NOUN+ZERO+A3SG+P2SG$ADJ+JUSTLIKE^DB+NOUN+ZERO+A3SG+PNON$NOUN+ZERO+A3SG+P3SG":
+                return "NOUN+ZERO+A3SG+P3SG";
+                /* milyarlık, milyonluk, beşlik, ikilik */
+            case "NESS+A3SG+PNON+NOM$ZERO+A3SG+PNON+NOM^DB+ADJ+FITFOR":
+                return "ZERO+A3SG+PNON+NOM^DB+ADJ+FITFOR";
+                /* alınmamaktadır, koymamaktadır */
+            case "NEG+PROG2$NEG^DB+NOUN+INF+A3SG+PNON+LOC^DB+VERB+ZERO+PRES":
+                return "NEG+PROG2";
+                /* HEPİMİZ */
+            case "A1PL+P1PL+NOM$A3SG+P3SG+GEN^DB+VERB+ZERO+PRES+A1PL":
+                return "A1PL+P1PL+NOM";
+                /* KİMSENİN */
+            case "NOUN+A3SG+P2SG$NOUN+A3SG+PNON$PRON+QUANTP+A3SG+P3SG":
+                return "PRON+QUANTP+A3SG+P3SG";
+                /* GEÇMİŞ, ALMIŞ, VARMIŞ */
+            case "ADJ^DB+VERB+ZERO+NARR+A3SG$VERB+POS+NARR+A3SG$VERB+POS+NARR^DB+ADJ+ZERO":
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "VERB+POS+NARR^DB+ADJ+ZERO";
+                }
+                return "VERB+POS+NARR+A3SG";
+                /* yapacağınız, konuşabileceğiniz, olacağınız */
+            case "ADJ+FUTPART+P2PL$NOUN+FUTPART+A3SG+P2PL+NOM$NOUN+FUTPART+A3SG+PNON+GEN^DB+VERB+ZERO+PRES+A1PL":
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "ADJ+FUTPART+P2PL";
+                }
+                return "NOUN+FUTPART+A3SG+P2PL+NOM";
+                /* YILINA, DİLİNE, YOLUNA */
+            case "NOUN+A3SG+P2SG+DAT$NOUN+A3SG+P3SG+DAT$VERB^DB+VERB+PASS+POS+OPT+A3SG":
+                if (isAnyWordSecondPerson(index, correctParses)){
+                    return "NOUN+A3SG+P2SG+DAT";
+                }
+                return "NOUN+A3SG+P3SG+DAT";
+                /* MİSİN, MİYDİ, MİSİNİZ */
+            case "NOUN+A3SG+PNON+NOM^DB+VERB+ZERO$QUES":
+                return "QUES";
+                /* ATAKLAR, GÜÇLER, ESASLAR */
+            case "ADJ^DB+NOUN+ZERO+A3PL+PNON+NOM$ADJ^DB+VERB+ZERO+PRES+A3PL$NOUN+A3PL+PNON+NOM$NOUN+A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A3PL":
+                return "NOUN+A3PL+PNON+NOM";
+            case "A3PL+P3SG$A3SG+P3PL$PROP+A3PL+P3PL":
+                return "PROP+A3PL+P3PL";
+                /* pilotunuz, suçunuz, haberiniz */
+            case "P2PL+NOM$PNON+GEN^DB+VERB+ZERO+PRES+A1PL":
+                return "P2PL+NOM";
+                /* yıllarca, aylarca, düşmanca */
+            case "ADJ+ASIF$ADV+LY":
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "ADJ+ASIF";
+                }
+                return "ADV+LY";
+                /* gerçekçi, alıcı */
+            case "ADJ^DB+NOUN+AGT+A3SG+PNON+NOM$NOUN+A3SG+PNON+NOM^DB+ADJ+AGT":
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "NOUN+A3SG+PNON+NOM^DB+ADJ+AGT";
+                }
+                return "ADJ^DB+NOUN+AGT+A3SG+PNON+NOM";
+                /* havayollarına, gözyaşlarına */
+            case "P2SG$P3PL$P3SG":
+                if (isAnyWordSecondPerson(index, correctParses)){
+                    return "P2SG";
+                }
+                if (isPossessivePlural(index, correctParses)){
+                    return "P3PL";
+                }
+                return "P3SG";
+                /* olun, kurtulun, gelin */
+            case "VERB+POS+IMP+A2PL$VERB^DB+VERB+PASS+POS+IMP+A2SG":
+                return "VERB+POS+IMP+A2PL";
+            case "ADJ+JUSTLIKE^DB$NOUN+ZERO+A3SG+P3SG+NOM^DB":
+                return "NOUN+ZERO+A3SG+P3SG+NOM^DB";
+                /* oluşmaktaydı, gerekemekteydi */
+            case "POS+PROG2$POS^DB+NOUN+INF+A3SG+PNON+LOC^DB+VERB+ZERO":
+                return "POS+PROG2";
+                /* BERABER */
+            case "ADJ$ADV$POSTP+PCINS":
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.INSTRUMENTAL)) {
+                    return "POSTP+PCINS";
+                }
+                if (isNextWordNounOrAdjective(index, fsmParses)){
+                    return "ADJ";
+                }
+                return "ADV";
+                /* BİN, KIRK */
+            case "NUM+CARD$VERB+POS+IMP+A2SG":
+                return "NUM+CARD";
+                /* ÖTE */
+            case "NOUN+A3SG+PNON+NOM$POSTP+PCABL":
+                if (hasPreviousWordTag(index, correctParses, MorphologicalTag.ABLATIVE)) {
+                    return "POSTP+PCABL";
+                }
+                return "NOUN+A3SG+PNON+NOM";
+                /* BENİMLE */
+            case "NOUN+A3SG+P1SG$PRON+PERS+A1SG+PNON":
+                return "PRON+PERS+A1SG+PNON";
+                /* Accusative and Ablative Cases*/
+            case "P3SG+NOM$PNON+ACC":
+            case "ADV+WITHOUTHAVINGDONESO$NOUN+INF2+A3SG+PNON+ABL":
+            case "ADJ^DB+NOUN+ZERO+A3SG+P3SG+NOM$ADJ^DB+NOUN+ZERO+A3SG+PNON+ACC$NOUN+A3SG+P3SG+NOM$NOUN+A3SG+PNON+ACC":
+                break;
             default:
                 break;
         }

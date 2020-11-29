@@ -841,10 +841,38 @@ public abstract class AutoDisambiguator {
             case "NOUN+A3SG+P1SG$PRON+PERS+A1SG+PNON":
                 return "PRON+PERS+A1SG+PNON";
                 /* Accusative and Ablative Cases*/
-            case "P3SG+NOM$PNON+ACC":
             case "ADV+WITHOUTHAVINGDONESO$NOUN+INF2+A3SG+PNON+ABL":
+                return "ADV+WITHOUTHAVINGDONESO";
             case "ADJ^DB+NOUN+ZERO+A3SG+P3SG+NOM$ADJ^DB+NOUN+ZERO+A3SG+PNON+ACC$NOUN+A3SG+P3SG+NOM$NOUN+A3SG+PNON+ACC":
-                break;
+                return "ADJ^DB+NOUN+ZERO+A3SG+P3SG+NOM";
+            case "P3SG+NOM$PNON+ACC":
+                if (fsmParses[index].getFsmParse(0).getFinalPos().equals("PROP")) {
+                    return "PNON+ACC";
+                } else {
+                    return "P3SG+NOM";
+                }
+            case "A3PL+PNON+NOM$A3SG+PNON+NOM^DB+VERB+ZERO+PRES+A3PL":
+                return "A3PL+PNON+NOM";
+            case "ADV+SINCE$VERB+ZERO+PRES+COP+A3SG":
+                if (root.equalsIgnoreCase("yıl") || root.equalsIgnoreCase("süre") || root.equalsIgnoreCase("zaman") || root.equalsIgnoreCase("ay")) {
+                    return "ADV+SINCE";
+                } else {
+                    return "VERB+ZERO+PRES+COP+A3SG";
+                }
+            case "CONJ$VERB+POS+IMP+A2SG":
+                return "CONJ";
+            case "NEG+IMP+A2SG$POS^DB+NOUN+INF2+A3SG+PNON+NOM":
+                return "POS^DB+NOUN+INF2+A3SG+PNON+NOM";
+            case "NEG+OPT+A3SG$POS^DB+NOUN+INF2+A3SG+PNON+DAT":
+                return "POS^DB+NOUN+INF2+A3SG+PNON+DAT";
+            case "NOUN+A3SG+P3SG+NOM$NOUN^DB+ADJ+ALMOST":
+                return "NOUN+A3SG+P3SG+NOM";
+            case "ADJ$VERB+POS+IMP+A2SG":
+                return "ADJ";
+            case "NOUN+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
+                return "NOUN+A3SG+PNON+NOM";
+            case "INF2+A3SG+P3SG+NOM$INF2^DB+ADJ+ALMOST$":
+                return "INF2+A3SG+P3SG+NOM";
             default:
                 break;
         }
@@ -853,10 +881,6 @@ public abstract class AutoDisambiguator {
 
     public static FsmParse caseDisambiguator(int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         FsmParseList fsmParseList = fsmParses[index];
-        FsmParse defaultParse = fsmParseList.caseDisambiguator();
-        if (defaultParse != null){
-            return defaultParse;
-        }
         String defaultCase = selectCaseForParseString(fsmParses[index].parsesWithoutPrefixAndSuffix(), index, fsmParses, correctParses);
         if (defaultCase != null) {
             for (int i = 0; i < fsmParseList.size(); i++) {

@@ -879,7 +879,7 @@ public abstract class AutoDisambiguator {
                 return "ADJ";
             case "NOUN+A3SG+PNON+NOM$VERB+POS+IMP+A2SG":
                 return "NOUN+A3SG+PNON+NOM";
-            case "INF2+A3SG+P3SG+NOM$INF2^DB+ADJ+ALMOST$":
+            case "INF2+A3SG+P3SG+NOM$INF2^DB+ADJ+ALMOST":
                 return "INF2+A3SG+P3SG+NOM";
             default:
                 break;

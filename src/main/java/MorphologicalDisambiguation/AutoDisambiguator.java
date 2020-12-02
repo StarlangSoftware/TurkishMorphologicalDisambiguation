@@ -110,6 +110,7 @@ public abstract class AutoDisambiguator {
                 if (index > 0) {
                     return "PROP+A3SG";
                 }
+                break;
                 /* şirketin, seçimlerin, borsacıların, kitapların */
             case "P2SG+NOM$PNON+GEN":
                 if (isAnyWordSecondPerson(index, correctParses)) {
@@ -135,6 +136,7 @@ public abstract class AutoDisambiguator {
                             break;
                     }
                 }
+                break;
             case "ADJ$NOUN+A3SG+PNON+NOM":
                 if (isNextWordNounOrAdjective(index, fsmParses)) {
                     return "ADJ";
@@ -154,6 +156,7 @@ public abstract class AutoDisambiguator {
                 if (index > 0) {
                     return "NOUN+PROP+A3SG+PNON+NOM";
                 }
+                break;
                 /* BU, ŞU */
             case "DET$PRON+DEMONSP+A3SG+PNON+NOM":
                 if (isNextWordNoun(index, fsmParses)) {
@@ -190,6 +193,7 @@ public abstract class AutoDisambiguator {
                 if (isBeforeLastWord(index, fsmParses)) {
                     return "VERB+POS";
                 }
+                break;
                 /* İLE */
             case "CONJ$POSTP+PCNOM":
                 return "POSTP+PCNOM";
@@ -276,6 +280,7 @@ public abstract class AutoDisambiguator {
                     }
                     return "A3PL+PNON+NOM";
                 }
+                break;
                 /* ARTIK, GERİ */
             case "ADJ$ADV$NOUN+A3SG+PNON+NOM":
                 if (root.equals("artık")) {
@@ -427,6 +432,7 @@ public abstract class AutoDisambiguator {
                 if (index > 0) {
                     return "NOUN+PROP+A3SG+PNON+NOM";
                 }
+                break;
                 /* etmeyecek, yapmayacak, koşmayacak */
             case "NEG+FUT+A3SG$NEG^DB+ADJ+FUTPART+PNON":
                 return "NEG+FUT+A3SG";
@@ -444,6 +450,7 @@ public abstract class AutoDisambiguator {
                 if (index > 0) {
                     return "NOUN+PROP+A3SG+PNON+NOM";
                 }
+                break;
                 /* GEÇ, SIK */
             case "ADJ$ADV$VERB+POS+IMP+A2SG":
                 if (surfaceForm.equals("sık")) {
@@ -664,6 +671,7 @@ public abstract class AutoDisambiguator {
                     }
                     return "ADJ";
                 }
+                break;
                 /* YÜZ */
             case "NOUN+A3SG+PNON+NOM$NUM+CARD$VERB+POS+IMP+A2SG":
                 if (isNextWordNum(index, fsmParses)){

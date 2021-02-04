@@ -1,7 +1,7 @@
 For Developers
 ============
 
-You can also see [Python](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Py), [C++](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CPP), or [C#](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CS) repository.
+You can also see [Python](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Py), [Cython](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Cy), [C++](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CPP), or [C#](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CS) repository.
 
 ## Requirements
 

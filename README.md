@@ -102,23 +102,23 @@ MorphologicalDisambiguator provides Turkish morphological disambiguation. There 
 
 * Using `RootFirstDisambiguation`, the one that chooses only the root amongst the given analyses
 
-        morphologicalDisambiguator = RootFirstDisambiguation()
+        morphologicalDisambiguator = new RootFirstDisambiguation();
 
 * Using `RootWordStatisticsDisambiguation`, the one that chooses the root that is the most frequently used amongst the given analyses
 
-        morphologicalDisambiguator = RootWordStatisticsDisambiguation()
+        morphologicalDisambiguator = new RootWordStatisticsDisambiguation();
 
 * Using `LongestRootFirstDisambiguation`, the one that chooses the longest root among the given roots
         
-        morphologicalDisambiguator = LongestRootFirstDisambiguation()
+        morphologicalDisambiguator = new LongestRootFirstDisambiguation();
 
 * Using `HmmDisambiguation`, the one that chooses using an Hmm-based algorithm
         
-        morphologicalDisambiguator = HmmDisambiguation()
+        morphologicalDisambiguator = new HmmDisambiguation();
 
 * Using `DummyDisambiguation`, the one that chooses a random one amongst the given analyses 
      
-        morphologicalDisambiguator = DummyDisambiguation()
+        morphologicalDisambiguator = new DummyDisambiguation();
 
 ## Training MorphologicalDisambiguator
 

@@ -173,3 +173,20 @@ Output
     yarın+NOUN+A3SG+PNON+NOM
     doktor+NOUN+A3SG+PNON+DAT
     git+VERB+POS+FUT+A3PL
+
+# Cite
+
+	@InProceedings{gorgunyildiz12,
+	author="G{\"o}rg{\"u}n, Onur
+	and Yildiz, Olcay Taner",
+	editor="Gelenbe, Erol
+	and Lent, Ricardo
+	and Sakellari, Georgia",
+	title="A Novel Approach to Morphological Disambiguation for Turkish",
+	booktitle="Computer and Information Sciences II",
+	year="2012",
+	publisher="Springer London",
+	address="London",
+	pages="77--83",
+	isbn="978-1-4471-2155-8"
+	}

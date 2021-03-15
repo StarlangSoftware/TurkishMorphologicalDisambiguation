@@ -31,7 +31,7 @@ Then the morphological disambiguation problem can be defined as follows: For a g
 
 ### Annotation
 
-1. Open sentence-dependency.jar file.
+1. Open sentence-morphological-analyzer.jar file.
 2. Wait until the data load message is displayed.
 3. Click Open button in the Project menu.
 4. Choose a file for annotation from the folder *Turkish-Phrase*.

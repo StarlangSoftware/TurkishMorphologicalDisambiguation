@@ -6,7 +6,6 @@ import DataCollector.ParseTree.TreeEditorPanel;
 import DataCollector.Sentence.SentenceAnnotatorFrame;
 import DataCollector.Sentence.SentenceAnnotatorPanel;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
-import MorphologicalDisambiguation.RootWordStatistics;
 import WordNet.WordNet;
 
 import javax.swing.*;
@@ -37,11 +36,10 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
                 properties.load(new FileInputStream(new File("config.properties")));
                 String domainPrefix = properties.getProperty("domainPrefix");
                 String domainDictionaryFileName = domainPrefix + "_dictionary.txt";
-                String rootWordStatisticsFileName = domainPrefix + "_statistics.txt";
                 String wordNetFileName = domainPrefix + "_wordnet.txt";
                 this.fsm = new FsmMorphologicalAnalyzer(domainDictionaryFileName);
                 this.wordNet = new WordNet(wordNetFileName, new Locale("tr"));
-                turkishSentenceAutoDisambiguator = new TurkishSentenceAutoDisambiguator(this.fsm, new RootWordStatistics(new FileInputStream(rootWordStatisticsFileName)));
+                turkishSentenceAutoDisambiguator = new TurkishSentenceAutoDisambiguator(this.fsm);
             } catch (IOException f) {
             }
             for (int i = 0; i < projectPane.getTabCount(); i++){
@@ -53,7 +51,7 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
         });
         autoAnalysisDetectionOption = new JCheckBox("Auto Morphological Disambiguation", false);
         toolBar.add(autoAnalysisDetectionOption);
-        turkishSentenceAutoDisambiguator = new TurkishSentenceAutoDisambiguator(new RootWordStatistics("penntreebank_statistics.txt"));
+        turkishSentenceAutoDisambiguator = new TurkishSentenceAutoDisambiguator();
         JMenuItem itemViewAnnotated = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         itemViewAnnotated.addActionListener(e -> {
             new ViewSentenceMorphologicalAnnotationFrame(corpus, this);

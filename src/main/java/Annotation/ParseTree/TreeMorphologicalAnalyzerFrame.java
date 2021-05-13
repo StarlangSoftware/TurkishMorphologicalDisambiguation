@@ -6,7 +6,6 @@ import AutoProcessor.ParseTree.TurkishTreeAutoDisambiguator;
 import DataCollector.ParseTree.TreeEditorFrame;
 import DataCollector.ParseTree.TreeEditorPanel;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
-import MorphologicalDisambiguation.RootWordStatistics;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -15,12 +14,10 @@ import java.io.File;
 
 public class TreeMorphologicalAnalyzerFrame extends TreeEditorFrame {
     private JCheckBox autoDisambiguation;
-    private RootWordStatistics rootWordStatistics;
     private FsmMorphologicalAnalyzer fsm;
 
-    public TreeMorphologicalAnalyzerFrame(final FsmMorphologicalAnalyzer fsm, final RootWordStatistics rootWordStatistics){
+    public TreeMorphologicalAnalyzerFrame(final FsmMorphologicalAnalyzer fsm){
         this.setTitle("Morphological Analyzer");
-        this.rootWordStatistics = rootWordStatistics;
         this.fsm = fsm;
         autoDisambiguation = new JCheckBox("AutoDisambiguation", true);
         toolBar.add(autoDisambiguation);
@@ -35,7 +32,7 @@ public class TreeMorphologicalAnalyzerFrame extends TreeEditorFrame {
         TreeAutoDisambiguator treeAutoDisambiguator;
         if (autoDisambiguation.isSelected()){
             TreeEditorPanel current = (TreeEditorPanel) ((JScrollPane) projectPane.getSelectedComponent()).getViewport().getView();
-            treeAutoDisambiguator = new TurkishTreeAutoDisambiguator(rootWordStatistics);
+            treeAutoDisambiguator = new TurkishTreeAutoDisambiguator();
             treeAutoDisambiguator.autoDisambiguate(current.currentTree);
             current.currentTree.reload();
             current.repaint();

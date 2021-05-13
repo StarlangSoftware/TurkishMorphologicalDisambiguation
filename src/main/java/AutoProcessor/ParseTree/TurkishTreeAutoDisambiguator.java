@@ -10,17 +10,16 @@ import Corpus.Sentence;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
-import MorphologicalDisambiguation.RootWordStatistics;
-import MorphologicalDisambiguation.RootWordStatisticsDisambiguation;
+import MorphologicalDisambiguation.LongestRootFirstDisambiguation;
 
 import java.util.ArrayList;
 
 public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
-    private RootWordStatisticsDisambiguation rootWordStatisticsDisambiguation;
+    private LongestRootFirstDisambiguation longestRootFirstDisambiguation;
 
-    public TurkishTreeAutoDisambiguator(RootWordStatistics rootWordStatistics) {
-        super(new FsmMorphologicalAnalyzer(), rootWordStatistics);
-        rootWordStatisticsDisambiguation = new RootWordStatisticsDisambiguation();
+    public TurkishTreeAutoDisambiguator() {
+        super(new FsmMorphologicalAnalyzer());
+        longestRootFirstDisambiguation = new LongestRootFirstDisambiguation();
     }
 
     protected void autoFillSingleAnalysis(ParseTreeDrawable parseTree){
@@ -72,7 +71,7 @@ public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
                 String turkishWords = parseNode.getLayerData(ViewLayerType.TURKISH_WORD);
                 if (turkishWords != null) {
                     FsmParseList[] fsmParseLists = morphologicalAnalyzer.robustMorphologicalAnalysis(new Sentence(turkishWords));
-                    ArrayList<FsmParse> fsmParses = rootWordStatisticsDisambiguation.disambiguate(fsmParseLists);
+                    ArrayList<FsmParse> fsmParses = longestRootFirstDisambiguation.disambiguate(fsmParseLists);
                     FsmParse[] disambiguatedParses = new FsmParse[fsmParses.size()];
                     for (int i = 0; i < fsmParses.size(); i++){
                         disambiguatedParses[i] = fsmParses.get(i);

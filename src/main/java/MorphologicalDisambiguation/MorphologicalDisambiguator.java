@@ -1,5 +1,6 @@
 package MorphologicalDisambiguation;
 
+import Corpus.DisambiguationCorpus;
 import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
 

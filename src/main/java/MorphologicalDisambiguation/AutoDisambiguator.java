@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public abstract class AutoDisambiguator {
 
     protected FsmMorphologicalAnalyzer morphologicalAnalyzer;
-    protected RootWordStatistics rootWordStatistics;
 
     private static boolean isAnyWordSecondPerson(int index, ArrayList<FsmParse> correctParses) {
         int count = 0;

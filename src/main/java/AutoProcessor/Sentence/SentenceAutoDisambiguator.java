@@ -3,7 +3,6 @@ package AutoProcessor.Sentence;
 import AnnotatedSentence.AnnotatedSentence;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalDisambiguation.AutoDisambiguator;
-import MorphologicalDisambiguation.RootWordStatistics;
 
 /**
 * Abstract class to disambiguate a sentence automatically. By implementing 3 abstract methods,
@@ -33,12 +32,9 @@ public abstract class SentenceAutoDisambiguator extends AutoDisambiguator{
      * @param morphologicalAnalyzer Morphological analyzer for parsing the words. Morphological analyzer will return all
      *                              possible parses of each word so that the automatic disambiguator can disambiguate the
      *                              words.
-     * @param rootWordStatistics The object contains information about the selected correct root words in a corpus for a set
-     *                           of possible lemma. Root word statistics can be used to distinguish between possible root words.
      */
-    protected SentenceAutoDisambiguator(FsmMorphologicalAnalyzer morphologicalAnalyzer, RootWordStatistics rootWordStatistics){
+    protected SentenceAutoDisambiguator(FsmMorphologicalAnalyzer morphologicalAnalyzer){
         this.morphologicalAnalyzer = morphologicalAnalyzer;
-        this.rootWordStatistics = rootWordStatistics;
     }
 
     /**

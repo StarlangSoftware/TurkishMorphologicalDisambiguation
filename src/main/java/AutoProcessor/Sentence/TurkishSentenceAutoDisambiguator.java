@@ -5,8 +5,7 @@ import AnnotatedSentence.AnnotatedWord;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
-import MorphologicalDisambiguation.RootWordStatistics;
-import MorphologicalDisambiguation.RootWordStatisticsDisambiguation;
+import MorphologicalDisambiguation.LongestRootFirstDisambiguation;
 
 import java.util.ArrayList;
 
@@ -15,30 +14,22 @@ import java.util.ArrayList;
  */
 public class TurkishSentenceAutoDisambiguator extends SentenceAutoDisambiguator{
 
-    RootWordStatisticsDisambiguation rootWordStatisticsDisambiguation;
+    LongestRootFirstDisambiguation longestRootFirstDisambiguation;
 
     /**
      * Constructor for the class.
-     * @param rootWordStatistics The object contains information about the selected correct root words in a corpus for a set
-     *                           of possible lemma. For example, the lemma
-     *                           `günü': 2 possible root words `gün' and `günü'
-     *                           `çağlar' : 2 possible root words `çağ' and `çağlar'
      */
-    public TurkishSentenceAutoDisambiguator(RootWordStatistics rootWordStatistics) {
-        super(new FsmMorphologicalAnalyzer(), rootWordStatistics);
-        rootWordStatisticsDisambiguation = new RootWordStatisticsDisambiguation();
+    public TurkishSentenceAutoDisambiguator() {
+        super(new FsmMorphologicalAnalyzer());
+        longestRootFirstDisambiguation = new LongestRootFirstDisambiguation();
     }
 
     /**
      * Constructor for the class.
      * @param fsm                Finite State Machine based morphological analyzer
-     * @param rootWordStatistics The object contains information about the selected correct root words in a corpus for a set
-     *                           of possible lemma. For example, the lemma
-     *                           `günü': 2 possible root words `gün' and `günü'
-     *                           `çağlar' : 2 possible root words `çağ' and `çağlar'
      */
-    public TurkishSentenceAutoDisambiguator(FsmMorphologicalAnalyzer fsm, RootWordStatistics rootWordStatistics) {
-        super(fsm, rootWordStatistics);
+    public TurkishSentenceAutoDisambiguator(FsmMorphologicalAnalyzer fsm) {
+        super(fsm);
     }
 
     /**
@@ -62,7 +53,7 @@ public class TurkishSentenceAutoDisambiguator extends SentenceAutoDisambiguator{
      */
     protected void autoDisambiguateMultipleRootWords(AnnotatedSentence sentence) {
         FsmParseList[] fsmParses = morphologicalAnalyzer.robustMorphologicalAnalysis(sentence);
-        ArrayList<FsmParse> correctParses = rootWordStatisticsDisambiguation.disambiguate(fsmParses);
+        ArrayList<FsmParse> correctParses = longestRootFirstDisambiguation.disambiguate(fsmParses);
         for (int i = 0; i < sentence.wordCount(); i++){
             AnnotatedWord word = (AnnotatedWord) sentence.getWord(i);
             if (word.getParse() == null){

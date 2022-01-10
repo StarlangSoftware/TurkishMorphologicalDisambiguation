@@ -6,11 +6,13 @@ import AnnotatedSentence.ViewLayerType;
 import AutoProcessor.Sentence.TurkishSentenceAutoDisambiguator;
 import DataCollector.Sentence.SentenceAnnotatorPanel;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
+import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
 import WordNet.WordNet;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class SentenceMorphologicalAnalyzerPanel extends SentenceAnnotatorPanel {
     private FsmMorphologicalAnalyzer fsm;
@@ -25,6 +27,40 @@ public class SentenceMorphologicalAnalyzerPanel extends SentenceAnnotatorPanel {
         setLayout(new BorderLayout());
         list.setCellRenderer(new FsmParseListCellRenderer(wordNet));
         ToolTipManager.sharedInstance().registerComponent(list);
+    }
+
+    @Override
+    protected void setWordLayer() {
+        clickedWord.setParse(((FsmParse)list.getSelectedValue()).transitionList());
+        clickedWord.setMetamorphicParse(((FsmParse)list.getSelectedValue()).withList());
+    }
+
+    @Override
+    protected void setBounds() {
+        pane.setBounds(((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().x, ((AnnotatedWord)sentence.getWord(selectedWordIndex)).getArea().y + 20, 240, (int) (Toolkit.getDefaultToolkit().getScreenSize().height * 0.4));
+    }
+
+    @Override
+    protected void drawLayer(AnnotatedWord word, Graphics g, int currentLeft, int lineIndex, int wordIndex, int maxSize, ArrayList<Integer> wordSize, ArrayList<Integer> wordTotal) {
+        if (word.getParse() != null){
+            for (int j = 0; j < word.getParse().size(); j++){
+                g.drawString(word.getParse().getInflectionalGroupString(j), currentLeft, (lineIndex + 1) * lineSpace + 30 * (j + 1));
+            }
+        }
+    }
+
+    @Override
+    protected int getMaxLayerLength(AnnotatedWord word, Graphics g) {
+        int maxSize = g.getFontMetrics().stringWidth(word.getName());
+        if (word.getParse() != null){
+            for (int j = 0; j < word.getParse().size(); j++){
+                int size = g.getFontMetrics().stringWidth(word.getParse().getInflectionalGroupString(j));
+                if (size > maxSize){
+                    maxSize = size;
+                }
+            }
+        }
+        return maxSize;
     }
 
     public void autoDetect(){

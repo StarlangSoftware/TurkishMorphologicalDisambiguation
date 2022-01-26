@@ -41,6 +41,18 @@ public class SentenceMorphologicalAnalyzerPanel extends SentenceAnnotatorPanel {
     }
 
     @Override
+    protected void setLineSpace() {
+        int maxSize = 1;
+        for (int i = 0; i < sentence.wordCount(); i++){
+            AnnotatedWord word = (AnnotatedWord) sentence.getWord(i);
+            if (word.getParse() != null && word.getParse().size() > maxSize){
+                maxSize = word.getParse().size();
+            }
+        }
+        lineSpace = 40 * (maxSize + 1);
+    }
+
+    @Override
     protected void drawLayer(AnnotatedWord word, Graphics g, int currentLeft, int lineIndex, int wordIndex, int maxSize, ArrayList<Integer> wordSize, ArrayList<Integer> wordTotal) {
         if (word.getParse() != null){
             for (int j = 0; j < word.getParse().size(); j++){

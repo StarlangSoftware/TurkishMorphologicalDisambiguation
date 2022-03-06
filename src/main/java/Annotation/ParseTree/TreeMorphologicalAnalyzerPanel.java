@@ -3,6 +3,7 @@ package Annotation.ParseTree;
 import AnnotatedSentence.LayerNotExistsException;
 import AnnotatedSentence.ViewLayerType;
 import AnnotatedTree.LayerInfo;
+import AnnotatedTree.LayerItemNotExistsException;
 import AnnotatedTree.ParseNodeDrawable;
 import AnnotatedTree.WordNotExistsException;
 import DataCollector.ParseTree.TreeAction.LayerClearAction;
@@ -16,6 +17,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
@@ -207,6 +209,56 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
             }
         }
         return false;
+    }
+
+    protected int getStringSize(ParseNodeDrawable parseNode, Graphics g) {
+        int i, stringSize = 0;
+        if (parseNode.numberOfChildren() == 0) {
+            if (parseNode.getLayerInfo().getLayerSize(ViewLayerType.PART_OF_SPEECH) == 0){
+                return g.getFontMetrics().stringWidth(parseNode.getLayerData(ViewLayerType.TURKISH_WORD));
+            }
+            for (i = 0; i < parseNode.getLayerInfo().getLayerSize(ViewLayerType.PART_OF_SPEECH); i++)
+                try {
+                    if (g.getFontMetrics().stringWidth(parseNode.getLayerInfo().getLayerInfoAt(ViewLayerType.PART_OF_SPEECH, i)) > stringSize){
+                        stringSize = g.getFontMetrics().stringWidth(parseNode.getLayerInfo().getLayerInfoAt(ViewLayerType.PART_OF_SPEECH, i));
+                    }
+                } catch (LayerNotExistsException | LayerItemNotExistsException | WordNotExistsException e) {
+                    return g.getFontMetrics().stringWidth(parseNode.getData().getName());
+                }
+            return stringSize;
+        } else {
+            return g.getFontMetrics().stringWidth(parseNode.getData().getName());
+        }
+    }
+
+    protected void drawString(ParseNodeDrawable parseNode, Graphics g, int x, int y){
+        int i;
+        if (parseNode.numberOfChildren() == 0){
+            if (parseNode.getLayerInfo().getLayerSize(ViewLayerType.PART_OF_SPEECH) == 0){
+                g.drawString(parseNode.getLayerData(ViewLayerType.TURKISH_WORD), x, y);
+            }
+            for (i = 0; i < parseNode.getLayerInfo().getLayerSize(ViewLayerType.PART_OF_SPEECH); i++){
+                if (i > 0 && !parseNode.isGuessed()){
+                    g.setColor(Color.RED);
+                }
+                try {
+                    g.drawString(parseNode.getLayerInfo().getLayerInfoAt(ViewLayerType.PART_OF_SPEECH, i), x, y);
+                    y += 20;
+                } catch (LayerNotExistsException | LayerItemNotExistsException | WordNotExistsException e) {
+                    g.drawString(parseNode.getData().getName(), x, y);
+                }
+            }
+        } else {
+            g.drawString(parseNode.getData().getName(), x, y);
+        }
+    }
+
+    protected void setArea(ParseNodeDrawable parseNode, int x, int y, int stringSize){
+        if (parseNode.numberOfChildren() == 0){
+            parseNode.setArea(x - 5, y - 15, stringSize + 10, 20 * (parseNode.getLayerInfo().getLayerSize(ViewLayerType.PART_OF_SPEECH) + 1));
+        } else {
+            parseNode.setArea(x - 5, y - 15, stringSize + 10, 20);
+        }
     }
 
 }

@@ -53,7 +53,7 @@ After generating the classification dataset as above, one can use the [Classific
 For Developers
 ============
 
-You can also see [Python](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Py), [Cython](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Cy), [C++](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CPP), or [C#](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CS) repository.
+You can also see [Python](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Py), [Cython](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Cy), [C++](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CPP), [Swift](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Swift), [Js](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-Js), or [C#](https://github.com/starlangsoftware/TurkishMorphologicalDisambiguation-CS) repository.
 
 ## Requirements
 

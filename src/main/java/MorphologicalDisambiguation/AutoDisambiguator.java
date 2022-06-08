@@ -1,7 +1,6 @@
 package MorphologicalDisambiguation;
 
 import DataStructure.CounterHashMap;
-import Dictionary.Word;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;

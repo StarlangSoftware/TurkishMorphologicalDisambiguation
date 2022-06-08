@@ -136,6 +136,21 @@
                             <finalName>sentence-morphological-analyzer</finalName>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>tree-morphological-analyzer</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>Annotation.ParseTree.TestMorphologicalAnalyzerFrame</mainClass>
+                                </manifest>
+                            </archive>
+                            <finalName>tree-morphological-analyzer</finalName>
+                        </configuration>
+                    </execution>
                 </executions>
                 <configuration>
                     <descriptorRefs>

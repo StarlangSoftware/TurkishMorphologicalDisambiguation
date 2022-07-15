@@ -2,19 +2,13 @@ package MorphologicalDisambiguation;
 
 import Corpus.DisambiguatedWord;
 import Corpus.DisambiguationCorpus;
-import Corpus.Sentence;
-import Dictionary.TurkishWordComparator;
-import Dictionary.TxtDictionary;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -46,6 +40,5 @@ public class LongestRootFirstDisambiguationTest {
         assertEquals(0.9214, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
         assertEquals(0.8410, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
     }
-
 
 }

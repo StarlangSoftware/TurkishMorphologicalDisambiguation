@@ -53,7 +53,7 @@ After generating the classification dataset as above, one can use the [Classific
 Video Lectures
 ============
 
-[<img src=video1.jpg width="50%">](https://youtu.be/vhp6Mse1vdM)
+[<img src=video1.jpg width="50%">](https://youtu.be/vhp6Mse1vdM)[<img src=video2.jpg width="50%">](https://youtu.be/lkFhIKdDSvw)
 
 For Developers
 ============

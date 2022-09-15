@@ -37,8 +37,8 @@ public class HmmDisambiguationTest {
                 }
             }
         }
-        assertEquals(0.9333, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
-        assertEquals(0.8651, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
+        assertEquals(0.9331, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
+        assertEquals(0.8643, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
     }
 
 }

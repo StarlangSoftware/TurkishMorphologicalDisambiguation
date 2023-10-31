@@ -2,13 +2,19 @@ package MorphologicalDisambiguation;
 
 import Corpus.DisambiguatedWord;
 import Corpus.DisambiguationCorpus;
+import Corpus.Sentence;
+import Dictionary.Word;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -39,6 +45,33 @@ public class LongestRootFirstDisambiguationTest {
         }
         assertEquals(0.9234, (correctRoot + 0.0) / corpus.numberOfWords(), 0.0001);
         assertEquals(0.8424, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
+    }
+
+    @Test
+    public void testDistinctWordList(){
+        FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
+        LongestRootFirstDisambiguation algorithm = new LongestRootFirstDisambiguation();
+        try {
+            PrintWriter output = new PrintWriter(new File("output.txt"));
+            Scanner input = new Scanner(new File("distinct.txt"));
+            while (input.hasNext()){
+                String word = input.next();
+                output.print(word + "\t");
+                if (fsm.morphologicalAnalysis(word).size() > 0){
+                    Sentence sentence = new Sentence();
+                    sentence.addWord(new Word(word));
+                    FsmParseList[] sentenceAnalyses = fsm.robustMorphologicalAnalysis(sentence);
+                    ArrayList<FsmParse> fsmParses =  algorithm.disambiguate(sentenceAnalyses);
+                    output.println(fsmParses.get(0).getWord().getName());
+                } else {
+                   output.println("not analyzed");
+                }
+            }
+            input.close();
+            output.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

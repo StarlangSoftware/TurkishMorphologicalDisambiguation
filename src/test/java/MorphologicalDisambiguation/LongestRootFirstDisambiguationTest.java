@@ -52,23 +52,24 @@ public class LongestRootFirstDisambiguationTest {
         FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
         LongestRootFirstDisambiguation algorithm = new LongestRootFirstDisambiguation();
         try {
-            PrintWriter output = new PrintWriter(new File("output.txt"));
+            PrintWriter output1 = new PrintWriter(new File("analyzed.txt"));
+            PrintWriter output2 = new PrintWriter(new File("not-analyzed.txt"));
             Scanner input = new Scanner(new File("distinct.txt"));
             while (input.hasNext()){
                 String word = input.next();
-                output.print(word + "\t");
                 if (fsm.morphologicalAnalysis(word).size() > 0){
                     Sentence sentence = new Sentence();
                     sentence.addWord(new Word(word));
                     FsmParseList[] sentenceAnalyses = fsm.robustMorphologicalAnalysis(sentence);
                     ArrayList<FsmParse> fsmParses =  algorithm.disambiguate(sentenceAnalyses);
-                    output.println(fsmParses.get(0).getWord().getName());
+                    output1.println(word + "\t" + fsmParses.get(0).getWord().getName());
                 } else {
-                   output.println("not analyzed");
+                   output2.println(word);
                 }
             }
             input.close();
-            output.close();
+            output1.close();
+            output2.close();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }

@@ -58,8 +58,7 @@ public class LongestRootFirstDisambiguationTest {
             while (input.hasNext()){
                 String word = input.next();
                 if (fsm.morphologicalAnalysis(word).size() > 0){
-                    Sentence sentence = new Sentence();
-                    sentence.addWord(new Word(word));
+                    Sentence sentence = new Sentence(word);
                     FsmParseList[] sentenceAnalyses = fsm.robustMorphologicalAnalysis(sentence);
                     ArrayList<FsmParse> fsmParses =  algorithm.disambiguate(sentenceAnalyses);
                     output1.println(word + "\t" + fsmParses.get(0).getWord().getName());

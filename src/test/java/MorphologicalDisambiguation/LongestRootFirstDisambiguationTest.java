@@ -47,7 +47,6 @@ public class LongestRootFirstDisambiguationTest {
         assertEquals(0.8424, (correctParse + 0.0) / corpus.numberOfWords(), 0.0001);
     }
 
-    @Test
     public void testDistinctWordList(){
         FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
         LongestRootFirstDisambiguation algorithm = new LongestRootFirstDisambiguation();

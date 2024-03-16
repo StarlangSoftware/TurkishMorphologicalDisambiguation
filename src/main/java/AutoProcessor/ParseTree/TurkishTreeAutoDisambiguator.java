@@ -15,7 +15,7 @@ import MorphologicalDisambiguation.LongestRootFirstDisambiguation;
 import java.util.ArrayList;
 
 public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
-    private LongestRootFirstDisambiguation longestRootFirstDisambiguation;
+    private final LongestRootFirstDisambiguation longestRootFirstDisambiguation;
 
     public TurkishTreeAutoDisambiguator() {
         super(new FsmMorphologicalAnalyzer());
@@ -42,7 +42,7 @@ public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
                             break;
                         }
                     }
-                    if (morphologicalAnalysis.length() > 0){
+                    if (!morphologicalAnalysis.isEmpty()){
                         parseNode.getLayerInfo().setLayerData(ViewLayerType.INFLECTIONAL_GROUP, morphologicalAnalysis.trim());
                         parseNode.getLayerInfo().setLayerData(ViewLayerType.META_MORPHEME, morphotactics.trim());
                     }
@@ -52,14 +52,14 @@ public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
     }
 
     private void setDisambiguatedParses(FsmParse[] disambiguatedFsmParses, ParseNodeDrawable parseNode){
-        String morphologicalAnalysis = disambiguatedFsmParses[0].transitionList();
-        String morphotactics = disambiguatedFsmParses[0].withList();
+        StringBuilder morphologicalAnalysis = new StringBuilder(disambiguatedFsmParses[0].transitionList());
+        StringBuilder morphotactics = new StringBuilder(disambiguatedFsmParses[0].withList());
         for (int i = 1; i < disambiguatedFsmParses.length; i++){
-            morphologicalAnalysis += " " + disambiguatedFsmParses[i].transitionList();
-            morphotactics += " " + disambiguatedFsmParses[i].withList();
+            morphologicalAnalysis.append(" ").append(disambiguatedFsmParses[i].transitionList());
+            morphotactics.append(" ").append(disambiguatedFsmParses[i].withList());
         }
-        parseNode.getLayerInfo().setLayerData(ViewLayerType.INFLECTIONAL_GROUP, morphologicalAnalysis);
-        parseNode.getLayerInfo().setLayerData(ViewLayerType.META_MORPHEME, morphotactics);
+        parseNode.getLayerInfo().setLayerData(ViewLayerType.INFLECTIONAL_GROUP, morphologicalAnalysis.toString());
+        parseNode.getLayerInfo().setLayerData(ViewLayerType.META_MORPHEME, morphotactics.toString());
     }
 
 

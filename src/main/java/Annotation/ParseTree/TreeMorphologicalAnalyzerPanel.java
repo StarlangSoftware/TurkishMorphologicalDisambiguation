@@ -22,9 +22,9 @@ import java.util.ArrayList;
 
 public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
 
-    private JTree tree;
-    private DefaultTreeModel treeModel;
-    private FsmMorphologicalAnalyzer fsm;
+    private final JTree tree;
+    private final DefaultTreeModel treeModel;
+    private final FsmMorphologicalAnalyzer fsm;
     private FsmParseList[] fsmParses;
 
     public TreeMorphologicalAnalyzerPanel(String path, String fileName, FsmMorphologicalAnalyzer fsm, boolean defaultFillEnabled) {
@@ -38,13 +38,13 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             if (node != null && node.getLevel() == fsmParses.length){
                 ArrayList<FsmParse> selectedFsmParses = getSelectedParses(node);
-                String word1 = selectedFsmParses.get(0).transitionList();
-                String word2 = selectedFsmParses.get(0).withList();
+                StringBuilder word1 = new StringBuilder(selectedFsmParses.get(0).transitionList());
+                StringBuilder word2 = new StringBuilder(selectedFsmParses.get(0).withList());
                 for (int i = 1; i < selectedFsmParses.size(); i++) {
-                    word1 = word1 + " " + selectedFsmParses.get(i).transitionList();
-                    word2 = word2 + " " + selectedFsmParses.get(i).withList();
+                    word1.append(" ").append(selectedFsmParses.get(i).transitionList());
+                    word2.append(" ").append(selectedFsmParses.get(i).withList());
                 }
-                MorphologicalAnalysisAction action = new MorphologicalAnalysisAction(((TreeMorphologicalAnalyzerPanel) tree.getParent().getParent().getParent()), previousNode.getLayerInfo(), word1, word2);
+                MorphologicalAnalysisAction action = new MorphologicalAnalysisAction(((TreeMorphologicalAnalyzerPanel) tree.getParent().getParent().getParent()), previousNode.getLayerInfo(), word1.toString(), word2.toString());
                 setAction(action);
                 tree.setVisible(false);
             } else {
@@ -66,7 +66,7 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
     }
 
     private ArrayList<FsmParse> getSelectedParses(DefaultMutableTreeNode node){
-        ArrayList<FsmParse> selectedFsmParses = new ArrayList<FsmParse>();
+        ArrayList<FsmParse> selectedFsmParses = new ArrayList<>();
         switch (fsmParses.length){
             case 1:
                 if (node.getLevel() == 1){
@@ -155,10 +155,7 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
                         }
                         break;
                 }
-            } catch (LayerNotExistsException e) {
-                e.printStackTrace();
-            } catch (WordNotExistsException e) {
-                e.printStackTrace();
+            } catch (LayerNotExistsException | WordNotExistsException ignored) {
             }
         }
         treeModel.reload();
@@ -202,10 +199,7 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
                         }
                     }
                 }
-            } catch (LayerNotExistsException e) {
-                e.printStackTrace();
-            } catch (WordNotExistsException e) {
-                e.printStackTrace();
+            } catch (LayerNotExistsException | WordNotExistsException ignored) {
             }
         }
         return false;

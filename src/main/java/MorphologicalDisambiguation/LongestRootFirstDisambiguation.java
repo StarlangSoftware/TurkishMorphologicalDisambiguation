@@ -43,7 +43,7 @@ public class LongestRootFirstDisambiguation implements MorphologicalDisambiguato
                 }
             } while (true);
             br.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

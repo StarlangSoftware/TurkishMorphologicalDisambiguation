@@ -3,11 +3,6 @@ package MorphologicalDisambiguation;
 import Dictionary.Word;
 import Ngram.*;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-
 public abstract class NaiveDisambiguation implements MorphologicalDisambiguator {
     protected NGram<Word> wordUniGramModel;
     protected NGram<Word> igUniGramModel;

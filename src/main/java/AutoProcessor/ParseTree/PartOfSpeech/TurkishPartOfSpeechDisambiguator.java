@@ -112,7 +112,7 @@ public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDi
         if (fsmParses.size() == 1){
             return fsmParses.get(0);
         }
-        if (fsmParses.size() == 0){
+        if (fsmParses.isEmpty()){
             return null;
         }
         String parseString = new FsmParseList(fsmParses).parsesWithoutPrefixAndSuffix();
@@ -266,14 +266,14 @@ public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDi
     }
 
     public boolean containsPOS(FsmParseList[] fsmParses, String partOfSpeech, boolean initialPos){
-        for (int i = 0; i < fsmParses.length; i++){
-            for (int j = 0; j < fsmParses[i].size(); j++){
-                if (initialPos){
-                    if (fsmParses[i].getFsmParse(j).getInitialPos() != null && fsmParses[i].getFsmParse(j).getInitialPos().equals(partOfSpeech)){
+        for (FsmParseList fsmPars : fsmParses) {
+            for (int j = 0; j < fsmPars.size(); j++) {
+                if (initialPos) {
+                    if (fsmPars.getFsmParse(j).getInitialPos() != null && fsmPars.getFsmParse(j).getInitialPos().equals(partOfSpeech)) {
                         return true;
                     }
                 } else {
-                    if (fsmParses[i].getFsmParse(j).getFinalPos() != null && fsmParses[i].getFsmParse(j).getFinalPos().equals(partOfSpeech)){
+                    if (fsmPars.getFsmParse(j).getFinalPos() != null && fsmPars.getFsmParse(j).getFinalPos().equals(partOfSpeech)) {
                         return true;
                     }
                 }

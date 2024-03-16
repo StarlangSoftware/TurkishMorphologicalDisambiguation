@@ -8,13 +8,13 @@ import DataCollector.ParseTree.TreeEditorPanel;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
 public class TreeMorphologicalAnalyzerFrame extends TreeEditorFrame {
-    private JCheckBox autoDisambiguation;
-    private FsmMorphologicalAnalyzer fsm;
+    private final JCheckBox autoDisambiguation;
+    private final FsmMorphologicalAnalyzer fsm;
 
     public TreeMorphologicalAnalyzerFrame(final FsmMorphologicalAnalyzer fsm){
         this.setTitle("Morphological Analyzer");
@@ -22,10 +22,8 @@ public class TreeMorphologicalAnalyzerFrame extends TreeEditorFrame {
         autoDisambiguation = new JCheckBox("AutoDisambiguation", true);
         toolBar.add(autoDisambiguation);
         TreeBankDrawable treeBank = new TreeBankDrawable(new File(TreeEditorPanel.treePath));
-        JMenuItem itemViewAnnotations = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
-        itemViewAnnotations.addActionListener(e -> {
-            new ViewTreeMorphologicalAnnotationFrame(treeBank, fsm, this);
-        });
+        JMenuItem itemViewAnnotations = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
+        itemViewAnnotations.addActionListener(e -> new ViewTreeMorphologicalAnnotationFrame(treeBank, fsm, this));
     }
 
     private void autoDisambiguate(){

@@ -5,6 +5,9 @@ import AnnotatedSentence.AnnotatedSentence;
 import AnnotatedSentence.AnnotatedWord;
 import DataCollector.ParseTree.TreeEditorPanel;
 import DataCollector.Sentence.ViewSentenceAnnotationFrame;
+import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
+import MorphologicalAnalysis.FsmParseList;
+import MorphologicalDisambiguation.AutoDisambiguator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,12 +63,23 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
         sentence.save();
     }
 
-    protected void prepareData(AnnotatedCorpus corpus){
+    protected void prepareData(FsmMorphologicalAnalyzer fsm, AnnotatedCorpus corpus){
+        String matchString;
         data = new ArrayList<>();
         for (int i = 0; i < corpus.sentenceCount(); i++){
             AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
+            FsmParseList[] fsmParses = fsm.robustMorphologicalAnalysis(sentence);
             for (int j = 0; j < corpus.getSentence(i).wordCount(); j++){
                 AnnotatedWord word = (AnnotatedWord) sentence.getWord(j);
+                fsmParses[j].reduceToParsesWithSameRoot(word.getParse().getWord().getName());
+                if (fsmParses[j].size() > 0){
+                    matchString = fsmParses[j].parsesWithoutPrefixAndSuffix();
+                    if (!matchString.contains("$")){
+                        matchString = "";
+                    }
+                } else {
+                    matchString = "";
+                }
                 ArrayList<String> row = new ArrayList<>();
                 row.add(sentence.getFileName());
                 row.add("" + (j + 1));
@@ -76,6 +90,7 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
                     row.add("-");
                 }
                 row.add(sentence.toWords());
+                row.add(matchString);
                 row.add("" + i);
                 row.add("0");
                 data.add(row);
@@ -83,11 +98,13 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
         }
     }
 
-    public ViewSentenceMorphologicalAnnotationFrame(AnnotatedCorpus corpus, SentenceMorphologicalAnalyzerFrame sentenceMorphologicalAnalyzerFrame){
+    public ViewSentenceMorphologicalAnnotationFrame(FsmMorphologicalAnalyzer fsm, AnnotatedCorpus corpus, SentenceMorphologicalAnalyzerFrame sentenceMorphologicalAnalyzerFrame){
         super(corpus);
-        COLOR_COLUMN_INDEX = 6;
+        COLOR_COLUMN_INDEX = 7;
         TAG_INDEX = 3;
-        prepareData(corpus);
+        prepareData(fsm, corpus);
+        data.sort(new RowComparator(5, TAG_INDEX, WORD_INDEX));
+        updateGroupColors(5);
         dataTable = new JTable(new MorphologicalTableDataModel());
         dataTable.getColumnModel().getColumn(FILENAME_INDEX).setMinWidth(150);
         dataTable.getColumnModel().getColumn(FILENAME_INDEX).setMaxWidth(150);

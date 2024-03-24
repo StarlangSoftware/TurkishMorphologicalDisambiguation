@@ -28,7 +28,14 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
         this.fsm = fsm;
         this.wordNet = wordNet;
         AnnotatedCorpus corpus;
-        corpus = new AnnotatedCorpus(new File(TreeEditorPanel.phrasePath));
+        String subFolder = "false";
+        Properties properties1 = new Properties();
+        try {
+            properties1.load(Files.newInputStream(new File("config.properties").toPath()));
+            subFolder = properties1.getProperty("subFolder");
+        } catch (IOException ignored) {
+        }
+        corpus = readCorpus(subFolder);
         JMenuItem itemUpdateDictionary = addMenuItem(projectMenu, "Update Analyzer", KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
         itemUpdateDictionary.addActionListener(e -> {
             Properties properties = new Properties();

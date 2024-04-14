@@ -2,7 +2,6 @@ package Annotation.Sentence;
 
 import AnnotatedSentence.AnnotatedCorpus;
 import AutoProcessor.Sentence.TurkishSentenceAutoDisambiguator;
-import DataCollector.ParseTree.TreeEditorPanel;
 import DataCollector.Sentence.SentenceAnnotatorFrame;
 import DataCollector.Sentence.SentenceAnnotatorPanel;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
@@ -23,6 +22,13 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
     private WordNet wordNet;
     private TurkishSentenceAutoDisambiguator turkishSentenceAutoDisambiguator;
 
+    /**
+     * Constructor of the morphological disambiguation frame for annotated sentence. It reads the annotated sentence
+     * corpus and adds automatic morphological disambiguation button. It also adds itemUpdateDictionary button whose
+     * purpose is to use alternative domain dictionary and wordnet for morphological disambiguation.
+     * @param fsm Morphological analyzer
+     * @param wordNet Turkish wordnet
+     */
     public SentenceMorphologicalAnalyzerFrame(final FsmMorphologicalAnalyzer fsm, final WordNet wordNet){
         super();
         this.fsm = fsm;
@@ -32,7 +38,9 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
         Properties properties1 = new Properties();
         try {
             properties1.load(Files.newInputStream(new File("config.properties").toPath()));
-            subFolder = properties1.getProperty("subFolder");
+            if (properties1.containsKey("subFolder")){
+                subFolder = properties1.getProperty("subFolder");
+            }
         } catch (IOException ignored) {
         }
         corpus = readCorpus(subFolder);
@@ -69,6 +77,12 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
         return new SentenceMorphologicalAnalyzerPanel(currentPath, rawFileName, fsm, wordNet, turkishSentenceAutoDisambiguator);
     }
 
+    /**
+     * The next method takes an int count as input and moves forward along the SentenceMorphologicalAnalyzerPanels as
+     * much as the count. If the autoAnalysisDetectionOption is selected, it morphologically disambiguates
+     * words automatically.
+     * @param count Integer count is used to move forward.
+     */
     public void next(int count){
         super.next(count);
         SentenceMorphologicalAnalyzerPanel current;
@@ -78,6 +92,12 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
         }
     }
 
+    /**
+     * The previous method takes an int count as input and moves backward along the SentenceMorphologicalAnalyzerPanels
+     * as much as the count. If the autoAnalysisDetectionOption is selected, it morphologically
+     * disambiguates words automatically.
+     * @param count Integer count is used to move backward.
+     */
     public void previous(int count){
         super.previous(count);
         SentenceMorphologicalAnalyzerPanel current;

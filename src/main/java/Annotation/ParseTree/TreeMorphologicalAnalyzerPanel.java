@@ -27,6 +27,14 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
     private final FsmMorphologicalAnalyzer fsm;
     private FsmParseList[] fsmParses;
 
+    /**
+     * Constructor for the morphological disambiguation panel for a parse tree. It also adds the
+     * tree selection listener which will update the parse tree according to the selection.
+     * @param path The absolute path of the annotated parse tree.
+     * @param fileName The raw file name of the annotated parse tree.
+     * @param fsm Morphological analyzer
+     * @param defaultFillEnabled If true, automatic annotation will be done.
+     */
     public TreeMorphologicalAnalyzerPanel(String path, String fileName, FsmMorphologicalAnalyzer fsm, boolean defaultFillEnabled) {
         super(path, fileName, ViewLayerType.PART_OF_SPEECH, defaultFillEnabled);
         this.fsm = fsm;
@@ -65,6 +73,12 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
         addMouseMotionListener(this);
     }
 
+    /**
+     * Returns selected morphological parses for all words in the leaf node. There can be at most three words in a
+     * leaf node, therefore the method returns an array of morphological parses selected.
+     * @param node Selected tree node in JTree
+     * @return An array of selected morphological parses of the word(s) in the leaf node of the parse tree.
+     */
     private ArrayList<FsmParse> getSelectedParses(DefaultMutableTreeNode node){
         ArrayList<FsmParse> selectedFsmParses = new ArrayList<>();
         switch (fsmParses.length){
@@ -93,6 +107,14 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
         return selectedFsmParses;
     }
 
+    /**
+     * Fills the JTree that contains all possible morphological analyses of the word(s) in the leaf node. For every
+     * node in the leaf node, the robust morphological analysis is done, and the resulting morphological parses are
+     * added to the JTree such that all possibilities are displayed. The first level of the tree shows all possible
+     * parses for the first word, second level of the tree will show all possible parses for the second word, and
+     * third level of the tree shows all possible parses for the third word in the leaf node.
+     * @param node Selected node for which options will be displayed.
+     */
     public void populateLeaf(ParseNodeDrawable node){
         DefaultMutableTreeNode selectedNode = null;
         if (previousNode != null){
@@ -170,6 +192,12 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
         isEditing = true;
     }
 
+    /**
+     * Some of the words in the leaf node are morphologically disambiguated automatically. The words automatically
+     * disambiguated are the words that only have one morphological analysis.
+     * @param node Leaf node for which morphological disambiguation will be done.
+     * @return True, if automatic disambiguation is done, false otherwise.
+     */
     protected boolean defaultFill(ParseNodeDrawable node){
         LayerInfo info;
         if (fsm == null){
@@ -205,6 +233,13 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
         return false;
     }
 
+    /**
+     * The size of the string displayed. If it is a leaf node, it returns the maximum size of the morphological analyses
+     * of word(s) in the leaf node. Otherwise, it returns the size of the symbol in the node.
+     * @param parseNode Parse node
+     * @param g Graphics on which tree will be drawn.
+     * @return Size of the string displayed.
+     */
     protected int getStringSize(ParseNodeDrawable parseNode, Graphics g) {
         int i, stringSize = 0;
         if (parseNode.numberOfChildren() == 0) {
@@ -225,6 +260,13 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * If the node is a leaf node, it draws the word and its morphological analysis. Otherwise, it draws the node symbol.
+     * @param parseNode Parse Node
+     * @param g Graphics on which symbol is drawn.
+     * @param x x coordinate
+     * @param y y coordinate
+     */
     protected void drawString(ParseNodeDrawable parseNode, Graphics g, int x, int y){
         int i;
         if (parseNode.numberOfChildren() == 0){
@@ -247,6 +289,13 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
         }
     }
 
+    /**
+     * Sets the size of the enclosing area of the parse node (for selecting, editing etc.).
+     * @param parseNode Parse Node
+     * @param x x coordinate of the center of the node.
+     * @param y y coordinate of the center of the node.
+     * @param stringSize Size of the string in terms of pixels.
+     */
     protected void setArea(ParseNodeDrawable parseNode, int x, int y, int stringSize){
         if (parseNode.numberOfChildren() == 0){
             parseNode.setArea(x - 5, y - 15, stringSize + 10, 20 * (parseNode.getLayerInfo().getLayerSize(ViewLayerType.PART_OF_SPEECH) + 1));

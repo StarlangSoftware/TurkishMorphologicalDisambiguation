@@ -3,11 +3,10 @@ package Annotation.Sentence;
 import AnnotatedSentence.AnnotatedCorpus;
 import AnnotatedSentence.AnnotatedSentence;
 import AnnotatedSentence.AnnotatedWord;
-import DataCollector.ParseTree.TreeEditorPanel;
+import DataCollector.RowComparator3;
 import DataCollector.Sentence.ViewSentenceAnnotationFrame;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalAnalysis.FsmParseList;
-import MorphologicalDisambiguation.AutoDisambiguator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +16,10 @@ import java.util.ArrayList;
 
 public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnotationFrame implements ActionListener {
 
+    /**
+     * Updates the morphological analysis for the selected sentences.
+     * @param e Action event to be processed.
+     */
     public void actionPerformed(ActionEvent e) {
         super.actionPerformed(e);
         if (PASTE.equals(e.getActionCommand())) {
@@ -31,6 +34,11 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
 
     public class MorphologicalTableDataModel extends TableDataModel {
 
+        /**
+         * Returns the name of the given column.
+         * @param col  the column being queried
+         * @return Name of the given column
+         */
         public String getColumnName(int col) {
             switch (col) {
                 case FILENAME_INDEX:
@@ -48,6 +56,12 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
             }
         }
 
+        /**
+         * Updates the named entity tag for the sentence in the given cell.
+         * @param value   value to assign to cell
+         * @param row   row of cell
+         * @param col  column of cell
+         */
         public void setValueAt(Object value, int row, int col) {
             if (col == TAG_INDEX && !data.get(row).get(TAG_INDEX).equals(value)) {
                 updateMorphologicalAnalysis(row, (String) value);
@@ -55,6 +69,13 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
         }
     }
 
+
+    /**
+     * Sets the value in the data table. After finding the corresponding sentence in that row, updates the morphological
+     * analysis and metamorpheme layer of that word associated with that row.
+     * @param row Index of the row
+     * @param newValue New morphological analysis to be assigned.
+     */
     private void updateMorphologicalAnalysis(int row, String newValue){
         data.get(row).set(TAG_INDEX, newValue);
         AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(Integer.parseInt(data.get(row).get(COLOR_COLUMN_INDEX - 1)));
@@ -63,6 +84,19 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
         sentence.save();
     }
 
+    /**
+     * Constructs the data table. For every sentence, the columns are:
+     * <ol>
+     *     <li>Annotated sentence file name</li>
+     *     <li>Index of the word</li>
+     *     <li>Word itself</li>
+     *     <li>Morphological analysis of the word if it exists, - otherwise</li>
+     *     <li>Annotated sentence itself</li>
+     *     <li>Reduced morphological analyses of the word</li>
+     *     <li>Sentence index</li>
+     * </ol>
+     * @param corpus Annotated NER corpus
+     */
     protected void prepareData(FsmMorphologicalAnalyzer fsm, AnnotatedCorpus corpus){
         String matchString;
         data = new ArrayList<>();
@@ -98,12 +132,20 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
         }
     }
 
+    /**
+     * Constructs morphological disambiguation frame viewer. Arranges the minimum width, maximum width or with of every
+     * column. If the user double-clicks any row, the method automatically creates a new panel showing associated
+     * annotated sentence.
+     * @param fsm Morphological analyzer
+     * @param corpus Annotated corpus
+     * @param sentenceMorphologicalAnalyzerFrame Frame in which new panels will be created, when the user double-clicks a row.
+     */
     public ViewSentenceMorphologicalAnnotationFrame(FsmMorphologicalAnalyzer fsm, AnnotatedCorpus corpus, SentenceMorphologicalAnalyzerFrame sentenceMorphologicalAnalyzerFrame){
         super(corpus);
         COLOR_COLUMN_INDEX = 7;
         TAG_INDEX = 3;
         prepareData(fsm, corpus);
-        data.sort(new RowComparator(5, TAG_INDEX, WORD_INDEX));
+        data.sort(new RowComparator3(5, TAG_INDEX, WORD_INDEX));
         updateGroupColors(5);
         dataTable = new JTable(new MorphologicalTableDataModel());
         dataTable.getColumnModel().getColumn(FILENAME_INDEX).setMinWidth(150);

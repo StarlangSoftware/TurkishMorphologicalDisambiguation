@@ -109,7 +109,7 @@ public class TreeMorphologicalAnalyzerPanel extends TreeLeafEditorPanel {
 
     /**
      * Fills the JTree that contains all possible morphological analyses of the word(s) in the leaf node. For every
-     * node in the leaf node, the robust morphological analysis is done, and the resulting morphological parses are
+     * word in the leaf node, the robust morphological analysis is done, and the resulting morphological parses are
      * added to the JTree such that all possibilities are displayed. The first level of the tree shows all possible
      * parses for the first word, second level of the tree will show all possible parses for the second word, and
      * third level of the tree shows all possible parses for the third word in the leaf node.

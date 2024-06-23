@@ -129,7 +129,7 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
      */
     public ViewSentenceMorphologicalAnnotationFrame(AnnotatedCorpus corpus, SentenceMorphologicalAnalyzerFrame sentenceMorphologicalAnalyzerFrame){
         super(corpus);
-        COLOR_COLUMN_INDEX = 7;
+        COLOR_COLUMN_INDEX = 6;
         TAG_INDEX = 3;
         prepareData(corpus);
         data.sort(new RowComparator3(5, TAG_INDEX, WORD_INDEX));

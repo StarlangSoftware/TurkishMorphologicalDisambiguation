@@ -68,7 +68,7 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
         toolBar.add(autoAnalysisDetectionOption);
         turkishSentenceAutoDisambiguator = new TurkishSentenceAutoDisambiguator();
         JMenuItem itemViewAnnotated = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
-        itemViewAnnotated.addActionListener(e -> new ViewSentenceMorphologicalAnnotationFrame(fsm, corpus, this));
+        itemViewAnnotated.addActionListener(e -> new ViewSentenceMorphologicalAnnotationFrame(corpus, this));
         JOptionPane.showMessageDialog(this, "WordNet, dictionary and annotated corpus are loaded!", "Morphological Annotation", JOptionPane.INFORMATION_MESSAGE);
     }
 

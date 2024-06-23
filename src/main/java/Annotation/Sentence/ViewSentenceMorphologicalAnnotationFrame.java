@@ -97,23 +97,12 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
      * </ol>
      * @param corpus Annotated NER corpus
      */
-    protected void prepareData(FsmMorphologicalAnalyzer fsm, AnnotatedCorpus corpus){
-        String matchString;
+    protected void prepareData(AnnotatedCorpus corpus){
         data = new ArrayList<>();
         for (int i = 0; i < corpus.sentenceCount(); i++){
             AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(i);
-            FsmParseList[] fsmParses = fsm.robustMorphologicalAnalysis(sentence);
             for (int j = 0; j < corpus.getSentence(i).wordCount(); j++){
                 AnnotatedWord word = (AnnotatedWord) sentence.getWord(j);
-                fsmParses[j].reduceToParsesWithSameRoot(word.getParse().getWord().getName());
-                if (fsmParses[j].size() > 0){
-                    matchString = fsmParses[j].parsesWithoutPrefixAndSuffix();
-                    if (!matchString.contains("$")){
-                        matchString = "";
-                    }
-                } else {
-                    matchString = "";
-                }
                 ArrayList<String> row = new ArrayList<>();
                 row.add(sentence.getFileName());
                 row.add("" + (j + 1));
@@ -124,7 +113,6 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
                     row.add("-");
                 }
                 row.add(sentence.toWords());
-                row.add(matchString);
                 row.add("" + i);
                 row.add("0");
                 data.add(row);
@@ -136,15 +124,14 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
      * Constructs morphological disambiguation frame viewer. Arranges the minimum width, maximum width or with of every
      * column. If the user double-clicks any row, the method automatically creates a new panel showing associated
      * annotated sentence.
-     * @param fsm Morphological analyzer
      * @param corpus Annotated corpus
      * @param sentenceMorphologicalAnalyzerFrame Frame in which new panels will be created, when the user double-clicks a row.
      */
-    public ViewSentenceMorphologicalAnnotationFrame(FsmMorphologicalAnalyzer fsm, AnnotatedCorpus corpus, SentenceMorphologicalAnalyzerFrame sentenceMorphologicalAnalyzerFrame){
+    public ViewSentenceMorphologicalAnnotationFrame(AnnotatedCorpus corpus, SentenceMorphologicalAnalyzerFrame sentenceMorphologicalAnalyzerFrame){
         super(corpus);
         COLOR_COLUMN_INDEX = 7;
         TAG_INDEX = 3;
-        prepareData(fsm, corpus);
+        prepareData(corpus);
         data.sort(new RowComparator3(5, TAG_INDEX, WORD_INDEX));
         updateGroupColors(5);
         dataTable = new JTable(new MorphologicalTableDataModel());

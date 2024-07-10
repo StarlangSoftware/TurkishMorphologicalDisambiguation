@@ -33,7 +33,7 @@ public class TurkishSentenceAutoDisambiguator extends SentenceAutoDisambiguator{
     }
 
     /**
-     * If the words has only single root in its possible parses, the method disambiguates by looking special cases.
+     * If the word has only single root in its possible parses, the method disambiguates by looking special cases.
      * The cases are implemented in the caseDisambiguator method.
      * @param disambiguatedParse Morphological parse of the word.
      * @param word Word to be disambiguated.

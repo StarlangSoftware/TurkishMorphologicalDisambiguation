@@ -16,14 +16,27 @@ import java.util.HashMap;
 public class LongestRootFirstDisambiguation implements MorphologicalDisambiguator{
     private HashMap<String, String> rootList;
 
+    /**
+     * Constructor for the longest root first disambiguation algorithm. The method reads a list of (surface form, most
+     * frequent root word for that surface form) pairs from 'rootlist.txt' file.
+     */
     public LongestRootFirstDisambiguation(){
         readFromFile(FileUtils.getInputStream("rootlist.txt"));
     }
 
+    /**
+     * Constructor for the longest root first disambiguation algorithm. The method reads a list of (surface form, most
+     * frequent root word for that surface form) pairs from a given file.
+     * @param fileName File that contains list of (surface form, most frequent root word for that surface form) pairs.
+     */
     public LongestRootFirstDisambiguation(String fileName){
         readFromFile(FileUtils.getInputStream(fileName));
     }
 
+    /**
+     * Reads the list of (surface form, most frequent root word for that surface form) pairs from a given file.
+     * @param inputStream Input file stream.
+     */
     private void readFromFile(InputStream inputStream) {
         String line;
         String[] items;

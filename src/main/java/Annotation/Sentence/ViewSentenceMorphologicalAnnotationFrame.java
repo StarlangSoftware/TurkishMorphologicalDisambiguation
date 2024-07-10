@@ -5,16 +5,18 @@ import AnnotatedSentence.AnnotatedSentence;
 import AnnotatedSentence.AnnotatedWord;
 import DataCollector.RowComparator3;
 import DataCollector.Sentence.ViewSentenceAnnotationFrame;
-import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
-import MorphologicalAnalysis.FsmParseList;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnotationFrame implements ActionListener {
+
+    private AnnotatedSentence previousSentence = null;
+    private int previousRow = -1;
 
     /**
      * Updates the morphological analysis for the selected sentences.
@@ -146,11 +148,24 @@ public class ViewSentenceMorphologicalAnnotationFrame extends ViewSentenceAnnota
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (evt.getClickCount() == 2){
+                    if (previousRow != -1){
+                        previousSentence = new AnnotatedSentence(new File(previousSentence.getFile().getParent() + "/" + data.get(previousRow).get(0)));
+                        ArrayList<String> row = data.get(previousRow);
+                        for (int j = 0; j < previousSentence.wordCount(); j++){
+                            AnnotatedWord word = (AnnotatedWord) previousSentence.getWord(j);
+                            if (word.getParse() != null && row.get(1).equals("" + (j + 1))){
+                                row.set(2, word.getName());
+                                row.set(3, word.getParse().toString());
+                            }
+                        }
+                    }
                     int row = dataTable.rowAtPoint(evt.getPoint());
                     if (row >= 0) {
                         String fileName = data.get(row).get(0);
                         AnnotatedSentence sentence = (AnnotatedSentence) corpus.getSentence(Integer.parseInt(data.get(row).get(COLOR_COLUMN_INDEX - 1)));
                         sentenceMorphologicalAnalyzerFrame.addPanelToFrame(sentenceMorphologicalAnalyzerFrame.generatePanel(sentence.getFile().getParent(), fileName), fileName);
+                        previousRow = row;
+                        previousSentence = sentence;
                     }
                 }
             }

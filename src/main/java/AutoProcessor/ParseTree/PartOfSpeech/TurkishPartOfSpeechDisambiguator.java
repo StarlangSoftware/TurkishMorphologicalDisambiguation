@@ -9,6 +9,12 @@ import java.util.ArrayList;
 
 public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDisambiguator{
 
+    /**
+     * Checks if the node at the given position is the last node prior to a punctuation node.
+     * @param i Position of the node
+     * @param leafList Array list containing the leaf node.
+     * @return True, if all nodes after this node are punctuation nodes, false otherwise.
+     */
     public static boolean isLastNode(int i, ArrayList<ParseNodeDrawable> leafList){
         int j = i + 1;
         while (j < leafList.size()){
@@ -20,6 +26,16 @@ public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDi
         return true;
     }
 
+    /**
+     * Given the disambiguation parse string, position of the current word in the sentence, all morphological parses of
+     * all words in the sentence and all correct morphological parses of the previous words, the algorithm determines
+     * the correct morphological parse of the current word in rule based manner.
+     * @param parseString Disambiguation parse string. The string contains distinct subparses for the given word for a
+     *                    determined root word. The subparses are separated with '$'.
+     * @param rootForm Root of the word in the parse node
+     * @param partOfSpeech Part of speech of the current word.
+     * @return Correct morphological subparse of the current word.
+     */
     public static String defaultCaseForParseString(String rootForm, String parseString, String partOfSpeech){
         String defaultCase = null;
         switch (parseString){
@@ -86,6 +102,13 @@ public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDi
         return defaultCase;
     }
 
+    /**
+     * Checks if the length difference between two shortest morphological parse. If the length different is larger than
+     * 10, the method returns the shortest parse, otherwise it returns null. The best parse also can not end with
+     * "ADV+SINCE", "NOUN+A3SG+P1SG+DAT", or "NOUN+A3SG+PNON+DAT".
+     * @param fsmParses All possible parses for the word.
+     * @return The shortest parse, if it is 10 character shorter than the second shortest, null otherwise.
+     */
     protected FsmParse parseShortEnough(ArrayList<FsmParse> fsmParses){
         int minLength = Integer.MAX_VALUE, min2Length = Integer.MAX_VALUE;
         FsmParse bestFsmParse = null;
@@ -107,6 +130,13 @@ public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDi
         return null;
     }
 
+    /**
+     * Given all possible parses for a word in a parse node, the method tries to determine the correct morphological
+     * parse based on simple rules. If there is only one parse, it is selected. If there are more than one parse, the
+     * method calls defaultCaseForParseString to perform rule based disambiguation.
+     * @param fsmParses All possible parses for a word in a parse node.
+     * @return Null, if no disambiguation can be done, otherwise the correct parse determined.
+     */
     protected FsmParse caseDisambiguator(ArrayList<FsmParse> fsmParses){
         String defaultCase;
         if (fsmParses.size() == 1){
@@ -127,6 +157,14 @@ public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDi
         return null;
     }
 
+    /**
+     * Given all possible parses for a word in a parse node, the method checks if there is only one candidate parse and
+     * the initial pos of that parse is equal to the given part of speech tag.
+     * @param fsmParses All possible parses for a word in the parse node.
+     * @param partOfSpeech Part of speech tag to control.
+     * @return The candidate parse which has the initial pos as the given pos, if there are more parses or no parse
+     * satisfy the condition the method will return null.
+     */
     private FsmParse[] singleWordInitialPosDisambiguate(FsmParseList[] fsmParses, String partOfSpeech){
         FsmParse[] result = null;
         for (int i = 0; i < fsmParses[0].size(); i++){
@@ -142,6 +180,14 @@ public abstract class TurkishPartOfSpeechDisambiguator implements PartOfSpeechDi
         return result;
     }
 
+    /**
+     * Given all possible parses for a word in a parse node, the method checks if there is only one candidate parse and
+     * the initial pos of that parse is equal to the given part of speech tag.
+     * @param fsmParses All possible parses for a word in the parse node.
+     * @param partOfSpeech Part of speech tag to control.
+     * @return The candidate parse which has the initial pos as the given pos, if there are more parses or no parse
+     * satisfy the condition the method will return null.
+     */
     public FsmParse[] simpleSingleWordDisambiguate(FsmParseList[] fsmParses, String partOfSpeech) {
         if (fsmParses.length > 1){
             return null;

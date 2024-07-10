@@ -12,6 +12,14 @@ public abstract class AutoDisambiguator {
 
     protected FsmMorphologicalAnalyzer morphologicalAnalyzer;
 
+    /**
+     * Checks if there is any singular second person agreement or possessor tag before the current word at position
+     * index.
+     * @param index Position of the current word.
+     * @param correctParses All correct morphological parses of the previous words.
+     * @return True, if at least one of the morphological parses of the previous words has a singular second person
+     * agreement or possessor tag, false otherwise.
+     */
     private static boolean isAnyWordSecondPerson(int index, ArrayList<FsmParse> correctParses) {
         int count = 0;
         for (int i = index - 1; i >= 0; i--) {
@@ -22,6 +30,13 @@ public abstract class AutoDisambiguator {
         return count >= 1;
     }
 
+    /**
+     * Checks if there is any plural agreement or possessor tag before the current word at position index.
+     * @param index Position of the current word.
+     * @param correctParses All correct morphological parses of the previous words.
+     * @return True, if at least one of the morphological parses of the previous words has a plural agreement or
+     * possessor tag, false otherwise.
+     */
     private static boolean isPossessivePlural(int index, ArrayList<FsmParse> correctParses) {
         for (int i = index - 1; i >= 0; i--) {
             if (correctParses.get(i).isNoun()) {
@@ -31,6 +46,11 @@ public abstract class AutoDisambiguator {
         return false;
     }
 
+    /**
+     * Given all possible parses of the next word, this method returns the most frequent pos tag.
+     * @param nextParseList All possible parses of the next word.
+     * @return Most frequent pos tag in all possible parses of the next word.
+     */
     private static String nextWordPos(FsmParseList nextParseList) {
         CounterHashMap<String> map = new CounterHashMap<>();
         for (int i = 0; i < nextParseList.size(); i++) {
@@ -39,30 +59,73 @@ public abstract class AutoDisambiguator {
         return map.max();
     }
 
+    /**
+     * Checks if the current word is just before the last word.
+     * @param index Position of the current word.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @return True, if the current word is just before the last word, false otherwise.
+     */
     private static boolean isBeforeLastWord(int index, FsmParseList[] fsmParses){
         return index + 2 == fsmParses.length;
     }
 
+    /**
+     * Checks if there is at least one word after the current word.
+     * @param index Position of the current word.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @return True, if there is at least one word after the current word, false otherwise.
+     */
     private static boolean nextWordExists(int index, FsmParseList[] fsmParses) {
         return index + 1 < fsmParses.length;
     }
 
+    /**
+     * Checks if there is at least one word after the current word and that next word is a noun.
+     * @param index Position of the current word.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @return True, if there is at least one word after the current word and that next word is a noun, false otherwise.
+     */
     private static boolean isNextWordNoun(int index, FsmParseList[] fsmParses){
         return index + 1 < fsmParses.length && nextWordPos(fsmParses[index + 1]).equals("NOUN");
     }
 
+    /**
+     * Checks if there is at least one word after the current word and that next word is a number.
+     * @param index Position of the current word.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @return True, if there is at least one word after the current word and that next word is a number, false
+     * otherwise.
+     */
     private static boolean isNextWordNum(int index, FsmParseList[] fsmParses){
         return index + 1 < fsmParses.length && nextWordPos(fsmParses[index + 1]).equals("NUM");
     }
 
+    /**
+     * Checks if there is at least one word after the current word and that next word is a noun or adjective.
+     * @param index Position of the current word.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @return True, if there is at least one word after the current word and that next word is a noun or adjective,
+     * false otherwise.
+     */
     private static boolean isNextWordNounOrAdjective(int index, FsmParseList[] fsmParses) {
         return index + 1 < fsmParses.length && (nextWordPos(fsmParses[index + 1]).equals("NOUN") || nextWordPos(fsmParses[index + 1]).equals("ADJ") || nextWordPos(fsmParses[index + 1]).equals("DET"));
     }
 
+    /**
+     * Checks if the current word is the first word of the sentence or not.
+     * @param index Position of the current word.
+     * @return True, if the current word is the first word of the sentence, false otherwise.
+     */
     private static boolean isFirstWord(int index){
         return index == 0;
     }
 
+    /**
+     * Checks if there are at least two occurrences of 'ne', 'ya' or 'gerek' in the sentence.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @param word 'ne', 'ya' or 'gerek'
+     * @return True, if there are at least two occurrences of 'ne', 'ya' or 'gerek' in the sentence, false otherwise.
+     */
     private static boolean containsTwoNeOrYa(FsmParseList[] fsmParses, String word) {
         int count = 0;
         for (FsmParseList fsmPars : fsmParses) {
@@ -74,10 +137,29 @@ public abstract class AutoDisambiguator {
         return count == 2;
     }
 
+    /**
+     * Checks if there is at least one word before the given word and its pos tag is the given pos tag.
+     * @param index Position of the current word.
+     * @param correctParses All correct morphological parses of the previous words.
+     * @param tag Pos tag of the previous word
+     * @return True, if there is at least one word before the given word and its pos tag is the given pos tag, false
+     * otherwise.
+     */
     private static boolean hasPreviousWordTag(int index, ArrayList<FsmParse> correctParses, MorphologicalTag tag) {
         return index > 0 && correctParses.get(index - 1).containsTag(tag);
     }
 
+    /**
+     * Given the disambiguation parse string, position of the current word in the sentence, all morphological parses of
+     * all words in the sentence and all correct morphological parses of the previous words, the algorithm determines
+     * the correct morphological parse of the current word in rule based manner.
+     * @param parseString Disambiguation parse string. The string contains distinct subparses for the given word for a
+     *                    determined root word. The subparses are separated with '$'.
+     * @param index Position of the current word.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @param correctParses All correct morphological parses of the previous words.
+     * @return Correct morphological subparse of the current word.
+     */
     private static String selectCaseForParseString(String parseString, int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         String surfaceForm = fsmParses[index].getFsmParse(0).getSurfaceForm();
         String root = fsmParses[index].getFsmParse(0).getWord().getName();
@@ -885,6 +967,15 @@ public abstract class AutoDisambiguator {
         return null;
     }
 
+    /**
+     * Given the position of the current word in the sentence, all morphological parses of all words in the sentence and
+     * all correct morphological parses of the previous words, the algorithm determines the correct morphological parse
+     * of the current word in rule based manner.
+     * @param index Position of the current word.
+     * @param fsmParses All morphological parses of the current sentence.
+     * @param correctParses All correct morphological parses of the previous words.
+     * @return Correct morphological parse of the current word.
+     */
     public static FsmParse caseDisambiguator(int index, FsmParseList[] fsmParses, ArrayList<FsmParse> correctParses) {
         FsmParseList fsmParseList = fsmParses[index];
         String defaultCase = selectCaseForParseString(fsmParses[index].parsesWithoutPrefixAndSuffix(), index, fsmParses, correctParses);

@@ -17,11 +17,19 @@ import java.util.ArrayList;
 public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
     private final LongestRootFirstDisambiguation longestRootFirstDisambiguation;
 
+    /**
+     * Constructor for TurkishTreeAutoDisambiguator. Uses longest root first disambiguation strategy when needed.
+     */
     public TurkishTreeAutoDisambiguator() {
         super(new FsmMorphologicalAnalyzer());
         longestRootFirstDisambiguation = new LongestRootFirstDisambiguation();
     }
 
+    /**
+     * The method checks all words in all leaves one by one. For each word, if that word has only one morphological
+     * analysis, it sets the morphological layer to that morphological analysis.
+     * @param parseTree Parse tree to be disambiguated.
+     */
     protected void autoFillSingleAnalysis(ParseTreeDrawable parseTree){
         NodeDrawableCollector nodeDrawableCollector = new NodeDrawableCollector((ParseNodeDrawable) parseTree.getRoot(), new IsTurkishLeafNode());
         ArrayList<ParseNodeDrawable> leafList = nodeDrawableCollector.collect();
@@ -51,6 +59,12 @@ public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
         }
     }
 
+    /**
+     * Given the correct parses of all word for a parse node, the method sets the morphological layer for that node. The
+     * morphological parses of all words in that node should be separated with space character.
+     * @param disambiguatedFsmParses Correct morphological parses for all words in the parse node.
+     * @param parseNode Parse node to set morphological layer.
+     */
     private void setDisambiguatedParses(FsmParse[] disambiguatedFsmParses, ParseNodeDrawable parseNode){
         StringBuilder morphologicalAnalysis = new StringBuilder(disambiguatedFsmParses[0].transitionList());
         StringBuilder morphotactics = new StringBuilder(disambiguatedFsmParses[0].withList());
@@ -62,7 +76,11 @@ public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
         parseNode.getLayerInfo().setLayerData(ViewLayerType.META_MORPHEME, morphotactics.toString());
     }
 
-
+    /**
+     * If the possible morphological analyses of the words contain more than one root word, this method calls
+     * longest root word disambiguation algorithm for each word to disambiguate morphological analyses of that word.
+     * @param parseTree Parse tree to be disambiguated.
+     */
     protected void autoDisambiguateMultipleRootWords(ParseTreeDrawable parseTree) {
         NodeDrawableCollector nodeDrawableCollector = new NodeDrawableCollector((ParseNodeDrawable) parseTree.getRoot(), new IsTurkishLeafNode());
         ArrayList<ParseNodeDrawable> leafList = nodeDrawableCollector.collect();
@@ -82,6 +100,15 @@ public class TurkishTreeAutoDisambiguator extends TreeAutoDisambiguator {
         }
     }
 
+    /**
+     * The method checks all leaves one by one. Depending on the pos tag of the parent node of a leaf node, the method
+     * calls different rule based disambiguators. For adverbs, TurkishRBDisambiguator is used; for pronouns,
+     * TurkishPRPDisambiguator is used; for nouns, TurkishNNPDisambiguator and TurkishNNDisambiguator are used;
+     * for adjectives, TurkishJJDisambiguator is used; for verbs, TurkishVBDisambiguator is used. For prepositions,
+     * TurkishINTODisambiguator is used; for conjunctions, TurkishCCDisambiguator is used; for numbers,
+     * TurkishCDDisambiguator is used; for determiners, TurkishDTDisambiguator is used.
+     * @param parseTree Parse tree to be disambiguated.
+     */
     protected void autoDisambiguateWithRules(ParseTreeDrawable parseTree) {
         PartOfSpeechDisambiguator disambiguator;
         FsmParse[] disambiguatedFsmParses;

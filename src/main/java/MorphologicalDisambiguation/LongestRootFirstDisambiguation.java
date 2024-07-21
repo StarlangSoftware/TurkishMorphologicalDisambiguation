@@ -5,11 +5,6 @@ import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
 import Util.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,7 +16,7 @@ public class LongestRootFirstDisambiguation implements MorphologicalDisambiguato
      * frequent root word for that surface form) pairs from 'rootlist.txt' file.
      */
     public LongestRootFirstDisambiguation(){
-        readFromFile(FileUtils.getInputStream("rootlist.txt"));
+        readFromFile("rootlist.txt");
     }
 
     /**
@@ -30,34 +25,15 @@ public class LongestRootFirstDisambiguation implements MorphologicalDisambiguato
      * @param fileName File that contains list of (surface form, most frequent root word for that surface form) pairs.
      */
     public LongestRootFirstDisambiguation(String fileName){
-        readFromFile(FileUtils.getInputStream(fileName));
+        readFromFile(fileName);
     }
 
     /**
      * Reads the list of (surface form, most frequent root word for that surface form) pairs from a given file.
-     * @param inputStream Input file stream.
+     * @param fileName Input file name.
      */
-    private void readFromFile(InputStream inputStream) {
-        String line;
-        String[] items;
-        rootList = new HashMap<>();
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            do  {
-                line = br.readLine();
-                if (line == null){
-                    break;
-                }
-                items = line.split(" ");
-                if (items.length == 2){
-                    rootList.put(items[0], items[1]);
-                } else {
-                    System.out.println(line);
-                }
-            } while (true);
-            br.close();
-        } catch (IOException ignored) {
-        }
+    private void readFromFile(String fileName) {
+        this.rootList = FileUtils.readHashMap(fileName);
     }
 
     /**

@@ -2,9 +2,13 @@ package MorphologicalDisambiguation;
 
 import AnnotatedSentence.AnnotatedCorpus;
 import AnnotatedSentence.AnnotatedWord;
+import AnnotatedSentence.AnnotatedSentence;
 import Corpus.DisambiguatedWord;
 import Corpus.DisambiguationCorpus;
+import Corpus.FileDescription;
 import Corpus.Sentence;
+import DependencyParser.Universal.UniversalDependencyTreeBankCorpus;
+import DependencyParser.Universal.UniversalDependencyTreeBankWord;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import MorphologicalAnalysis.FsmParse;
 import MorphologicalAnalysis.FsmParseList;
@@ -18,6 +22,33 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class LongestRootFirstDisambiguationTest {
+
+    public void convertFromConnluToAnnotatedSentence(String connluFileName, String outputFolder, String pattern){
+        FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
+        MorphologicalDisambiguator morphologicalDisambiguator = new LongestRootFirstDisambiguation();
+        UniversalDependencyTreeBankCorpus universalDependencyTreeBankCorpus = new UniversalDependencyTreeBankCorpus(connluFileName);
+        for (int i = 0; i < universalDependencyTreeBankCorpus.sentenceCount(); i++){
+            Sentence sentence = universalDependencyTreeBankCorpus.getSentence(i);
+            Sentence surfaceFormOfSentence = new Sentence(sentence.toWords());
+            System.out.println(surfaceFormOfSentence);
+            FsmParseList[] fsmParseList = fsm.robustMorphologicalAnalysis(surfaceFormOfSentence);
+            AnnotatedSentence annotatedSentence = new AnnotatedSentence();
+            UniversalDependencyTreeBankWord universalDependencyTreeBankWord;
+            ArrayList<FsmParse> candidateParses = morphologicalDisambiguator.disambiguate(fsmParseList);
+            for (int j = 0; j < candidateParses.size(); j++){
+                universalDependencyTreeBankWord = (UniversalDependencyTreeBankWord) sentence.getWord(j);
+                int dependencyToIndex = universalDependencyTreeBankWord.getRelation().to();
+                AnnotatedWord annotatedWord = new AnnotatedWord(universalDependencyTreeBankWord.getName(), candidateParses.get(j));
+                annotatedWord.setUniversalDependency(dependencyToIndex, universalDependencyTreeBankWord.getRelation().toString());
+                annotatedSentence.addWord(annotatedWord);
+            }
+            annotatedSentence.writeToFile(new File(new FileDescription(outputFolder, pattern, i).getFileName()));
+        }
+    }
+
+    public void testConvertFromConnluToAnnotatedSentence() {
+        convertFromConnluToAnnotatedSentence("tr_ulu-ud-dev.conllu", "../../Uludag/Turkish-Phrase/", "dev");
+    }
 
     @Test
     public void testDisambiguation() {

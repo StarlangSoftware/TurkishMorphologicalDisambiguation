@@ -336,6 +336,8 @@ almanız alma
 almanlaşmak alman
 altıma alt
 altına alt
+altında alt
+altını alt
 altıncısını altıncı
 anam ana
 anda an
@@ -778,6 +780,7 @@ balıklarıma balık
 balıklarlar balık
 balona balon
 bambulu bambu
+bana ben
 banlar banla
 bantlarıma bant
 bara bar
@@ -1814,6 +1817,7 @@ civanın civan
 çınlamasına çınlama
 çırpıştırıcı çırp
 cızgara ızgara
+çocuklar çocuk
 çocuklara çocuk
 çocuklarda çocuk
 çocuklardan çocuk
@@ -2909,6 +2913,8 @@ ettirmeyiniz et
 ettirmez et
 ettirmiştir et
 ettirmiyor et
+evi ev
+eve ev
 evin ev
 evinde ev
 evinden ev
@@ -3620,6 +3626,7 @@ ingilizlerin ingiliz
 ini in
 inin in
 inmeliyim in
+işe iş
 işlemeden işleme
 işlemesi işleme
 işlemesine işleme
@@ -3647,6 +3654,7 @@ işletmesindeki işletme
 işletmesine işletme
 işletmesini işletme
 işte iş
+ise i
 istemeden iste
 istemeleri iste
 istemeyiz iste
@@ -5269,6 +5277,7 @@ olamazsa ol
 ölçersi ölç
 ölçüşeri ölç
 ölçüşerinde ölç
+oldu ol
 oldular ol
 oldularsa ol
 oldum ol
@@ -5357,10 +5366,13 @@ olmuştur ol
 olmuşumdur ol
 olsun ol
 ölünce öl
+olur ol
 olurdu ol
 olurduk ol
+olurken ol
 olurlar ol
 olurlarsa ol
+olurmuş ol
 olursa ol
 olursak ol
 olursam ol
@@ -5854,6 +5866,7 @@ sallarım salla
 şamanın şaman
 şamanız şaman
 şampuanlarlar şampuan
+sana sen
 sanayileşmesi sanayileşme
 sancılanır sancı
 sandıklarımı sandık
@@ -8330,6 +8343,7 @@ yuvarlanma yuvarla
 yuvarlanmak yuvarla
 yuvarlanmasa yuvarla
 yuvarlar yuvarla
+yüzde yüz
 yüzer yüz
 yüzerim yüz
 yüzeriz yüz

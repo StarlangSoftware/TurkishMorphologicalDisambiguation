@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class SentenceMorphologicalAnalyzerPanel extends SentenceAnnotatorPanel {
     private FsmMorphologicalAnalyzer fsm;
     private TurkishSentenceAutoDisambiguator turkishSentenceAutoDisambiguator;
+    private ArrayList<FsmParse> correctParses = new ArrayList<>();
 
     /**
      * Constructor for the morphological disambiguator panel for an annotated sentence. Sets the attributes.
@@ -83,6 +84,11 @@ public class SentenceMorphologicalAnalyzerPanel extends SentenceAnnotatorPanel {
         if (word.getParse() != null){
             for (int j = 0; j < word.getParse().size(); j++){
                 g.drawString(word.getParse().getInflectionalGroupString(j), currentLeft, (lineIndex + 1) * lineSpace + 30 * (j + 1));
+                if (correctParses != null && correctParses.size() > wordIndex && correctParses.get(wordIndex).size() > j && !word.getParse().getTransitionList().equals(correctParses.get(wordIndex).getTransitionList())){
+                    g.setColor(Color.BLUE);
+                    g.drawString(correctParses.get(wordIndex).getInflectionalGroupString(j), currentLeft, (lineIndex + 1) * lineSpace + 30 * (j + 1) + 15);
+                    g.setColor(Color.RED);
+                }
             }
         }
     }
@@ -112,7 +118,7 @@ public class SentenceMorphologicalAnalyzerPanel extends SentenceAnnotatorPanel {
      * Automatically disambiguate words in the sentence using turkishSentenceAutoDisambiguator.
      */
     public void autoDetect(){
-        turkishSentenceAutoDisambiguator.autoDisambiguate(sentence);
+        correctParses = turkishSentenceAutoDisambiguator.autoDisambiguate(sentence);
         sentence.save();
         this.repaint();
     }

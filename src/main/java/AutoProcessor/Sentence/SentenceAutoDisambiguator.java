@@ -2,7 +2,10 @@ package AutoProcessor.Sentence;
 
 import AnnotatedSentence.AnnotatedSentence;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
+import MorphologicalAnalysis.FsmParse;
 import MorphologicalDisambiguation.AutoDisambiguator;
+
+import java.util.ArrayList;
 
 /**
 * Abstract class to disambiguate a sentence automatically. By implementing 3 abstract methods,
@@ -25,7 +28,7 @@ public abstract class SentenceAutoDisambiguator extends AutoDisambiguator{
      * To disambiguate between the root words, one can use the root word statistics.
      * @param sentence The sentence to be disambiguated automatically.
      */
-    protected abstract void autoDisambiguateMultipleRootWords(AnnotatedSentence sentence);
+    protected abstract ArrayList<FsmParse> autoDisambiguateMultipleRootWords(AnnotatedSentence sentence);
 
     /**
      * Constructor for the class.
@@ -45,9 +48,10 @@ public abstract class SentenceAutoDisambiguator extends AutoDisambiguator{
      * 3. Disambiguates the morphological analyses where there are multiple candidate root words and
      * possibly multiple candidate morphological analyses for each candidate root word.
      * @param sentence The sentence to be disambiguated automatically.
+     * @return Correct parses of all words in the sentence.
      */
-    public void autoDisambiguate(AnnotatedSentence sentence){
-        autoDisambiguateMultipleRootWords(sentence);
+    public ArrayList<FsmParse> autoDisambiguate(AnnotatedSentence sentence){
+        return autoDisambiguateMultipleRootWords(sentence);
     }
 
 }

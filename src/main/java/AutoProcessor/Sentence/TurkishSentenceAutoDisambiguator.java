@@ -51,7 +51,7 @@ public class TurkishSentenceAutoDisambiguator extends SentenceAutoDisambiguator{
      * using the bestRootWord method. If root word is selected, then the case for single root word is called.
      * @param sentence The sentence to be disambiguated automatically.
      */
-    protected void autoDisambiguateMultipleRootWords(AnnotatedSentence sentence) {
+    protected ArrayList<FsmParse> autoDisambiguateMultipleRootWords(AnnotatedSentence sentence) {
         FsmParseList[] fsmParses = morphologicalAnalyzer.robustMorphologicalAnalysis(sentence);
         ArrayList<FsmParse> correctParses = longestRootFirstDisambiguation.disambiguate(fsmParses);
         for (int i = 0; i < sentence.wordCount(); i++){
@@ -60,6 +60,7 @@ public class TurkishSentenceAutoDisambiguator extends SentenceAutoDisambiguator{
                 setParseAutomatically(correctParses.get(i), word);
             }
         }
+        return correctParses;
     }
 
 }

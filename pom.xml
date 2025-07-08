@@ -50,7 +50,7 @@
         <dependency>
             <groupId>io.github.starlangsoftware</groupId>
             <artifactId>DataCollector</artifactId>
-            <version>1.0.70</version>
+            <version>1.0.71</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

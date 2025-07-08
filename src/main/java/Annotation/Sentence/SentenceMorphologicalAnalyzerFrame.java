@@ -1,9 +1,13 @@
 package Annotation.Sentence;
 
 import AnnotatedSentence.AnnotatedCorpus;
+import AnnotatedSentence.AnnotatedWord;
 import AutoProcessor.Sentence.TurkishSentenceAutoDisambiguator;
+import DataCollector.FileWithSelectedWords;
+import DataCollector.ParseTree.TreeEditorPanel;
 import DataCollector.Sentence.SentenceAnnotatorFrame;
 import DataCollector.Sentence.SentenceAnnotatorPanel;
+import DataCollector.ViewComparisonFrame;
 import MorphologicalAnalysis.FsmMorphologicalAnalyzer;
 import WordNet.WordNet;
 
@@ -13,6 +17,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -70,10 +75,21 @@ public class SentenceMorphologicalAnalyzerFrame extends SentenceAnnotatorFrame {
         JMenuItem itemViewAnnotated = addMenuItem(projectMenu, "View Annotations", KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
         itemViewAnnotated.addActionListener(e -> new ViewSentenceMorphologicalAnnotationFrame(corpus, this));
         JOptionPane.showMessageDialog(this, "WordNet, dictionary and annotated corpus are loaded!", "Morphological Annotation", JOptionPane.INFORMATION_MESSAGE);
+        JMenuItem itemViewComparison = addMenuItem(projectMenu, "View Comparison", KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
+        itemViewComparison.addActionListener(e -> {
+            final JFileChooser fcinput = new JFileChooser();
+            fcinput.setDialogTitle("Select comparison file");
+            fcinput.setDialogType(JFileChooser.OPEN_DIALOG);
+            fcinput.setCurrentDirectory(new File(TreeEditorPanel.phrasePath + "/.."));
+            int returnVal = fcinput.showOpenDialog(null);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                new ViewComparisonFrame(fcinput.getSelectedFile().getParent() + "/" + fcinput.getSelectedFile().getName(), this);
+            }
+        });
     }
 
     @Override
-    protected SentenceAnnotatorPanel generatePanel(String currentPath, String rawFileName) {
+    public SentenceAnnotatorPanel generatePanel(String currentPath, String rawFileName) {
         return new SentenceMorphologicalAnalyzerPanel(currentPath, rawFileName, fsm, wordNet, turkishSentenceAutoDisambiguator);
     }
 

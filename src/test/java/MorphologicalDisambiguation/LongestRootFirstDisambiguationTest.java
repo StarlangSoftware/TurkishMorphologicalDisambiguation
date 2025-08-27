@@ -53,7 +53,7 @@ public class LongestRootFirstDisambiguationTest {
     @Test
     public void testDisambiguation() {
         FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
-        DisambiguationCorpus corpus = new DisambiguationCorpus("gb.txt");
+        DisambiguationCorpus corpus = new DisambiguationCorpus("datasets/gb.txt");
         LongestRootFirstDisambiguation algorithm = new LongestRootFirstDisambiguation();
         int correctParse = 0;
         int correctRoot = 0;

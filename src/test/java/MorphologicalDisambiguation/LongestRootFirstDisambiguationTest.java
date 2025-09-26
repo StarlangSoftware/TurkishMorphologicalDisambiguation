@@ -53,7 +53,7 @@ public class LongestRootFirstDisambiguationTest {
     @Test
     public void testDisambiguation() {
         FsmMorphologicalAnalyzer fsm = new FsmMorphologicalAnalyzer();
-        DisambiguationCorpus corpus = new DisambiguationCorpus("datasets/gb.txt");
+        DisambiguationCorpus corpus = new DisambiguationCorpus("datasets/imst.txt");
         LongestRootFirstDisambiguation algorithm = new LongestRootFirstDisambiguation();
         int correctParse = 0;
         int correctRoot = 0;
@@ -68,6 +68,7 @@ public class LongestRootFirstDisambiguationTest {
                 } else {
                     if (fsmParses.get(j).getWord().equals(word.getParse().getWord())){
                         correctRoot++;
+                        System.out.println(word.getName());
                     }
                 }
             }

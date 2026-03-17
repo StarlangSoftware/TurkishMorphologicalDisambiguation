@@ -54,6 +54,16 @@ Simple Web Interface
 ============
 [Link 1](http://104.247.163.162/nlptoolkit/turkish-morphological-disambiguation.html) [Link 2](https://starlangsoftware.github.io/nlptoolkit-web-simple/turkish-morphological-disambiguation.html)
 
+Annotated Datasets
+============
+[Framenet & Tourism](http://104.247.163.162/nlptoolkit/turkish-disambiguation1.html)
+
+[Atis & Gb & Pud & Imst & Boun](http://104.247.163.162/nlptoolkit/turkish-disambiguation2.html)
+
+[Kenet](http://104.247.163.162/nlptoolkit/turkish-disambiguation3.html)
+
+[Penn-Treebank](http://104.247.163.162/nlptoolkit/turkish-disambiguation4.html)
+
 Video Lectures
 ============
 

@@ -50,6 +50,10 @@ After annotating sentences, you can use [DataGenerator](https://github.com/starl
 
 After generating the classification dataset as above, one can use the [Classification](https://github.com/starlangsoftware/Classification) package to generate machine learning models for the Morphological Disambiguation task.
 
+Simple Web Interface
+============
+[Link 1](http://104.247.163.162/nlptoolkit/turkish-morphological-disambiguation.html) [Link 2](https://starlangsoftware.github.io/nlptoolkit-web-simple/turkish-morphological-disambiguation.html)
+
 Video Lectures
 ============
 
